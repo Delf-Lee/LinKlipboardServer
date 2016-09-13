@@ -8,6 +8,7 @@ import javax.swing.ImageIcon;
 
 import server_manager.LinKlipboard;
 
+// Å×½ºÆ®
 public abstract class Contents {
 
 	protected Date date;
