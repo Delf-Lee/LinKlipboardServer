@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import datamanage.Contents;
+import contents.Contents;
 import datamanage.TransferManager;
 import server_manager.ClientHandler;
 import server_manager.LinKlipboardGroup;

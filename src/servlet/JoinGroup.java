@@ -13,6 +13,7 @@ import server_manager.ClientHandler;
 import server_manager.LinKlipboard;
 import server_manager.LinKlipboardGroup;
 import server_manager.LinKlipboardServer;
+import sun.security.util.Password;
 
 @WebServlet("/joinClient")
 public class JoinGroup extends HttpServlet {
@@ -26,6 +27,8 @@ public class JoinGroup extends HttpServlet {
 		// 정보 받음
 		String groupName = request.getParameter("groupName");
 		String password = request.getParameter("password");
+		char[] pw = Password.readPassword(request.getInputStream());
+				
 
 		int respone = LinKlipboard.NULL;
 

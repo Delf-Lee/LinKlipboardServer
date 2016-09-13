@@ -6,8 +6,9 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import javax.swing.ImageIcon;
-
+import contents.Contents;
+import contents.ImageContents;
+import contents.StringContents;
 import server_manager.ClientHandler;
 import server_manager.LinKlipboard;
 import server_manager.LinKlipboardGroup;
@@ -45,6 +46,8 @@ public class TransferManager extends Thread {
 			out = new ObjectOutputStream(socket.getOutputStream());
 			in = new ObjectInputStream(socket.getInputStream());
 
+			//Contents c = new ImageContents("");
+
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -52,27 +55,25 @@ public class TransferManager extends Thread {
 		}
 	}
 
-	/***/
-
 	/** 데이터 수신하는 스레드를 생성한다. 정확히는 스레드에서 데이터를 수신하는 부분만 실행한다. */
 	public void createReceiveThread() {
 		process = RECEIVE;
 		this.start();
 	}
 
+	public void createSendThread() {
+		process = SEND;
+		this.start();
+	}
+
 	/** 데이터를 직접 수신하는 부분 */
 	private Contents receiveData() {
 		try {
-
 			switch (type) {
 			case LinKlipboard.STRING_TYPE:
-				//String receiveStr = (String) in.readObject();
-				//StringContents contensStr = new StringContents(client.getNickname(), receiveStr);
 				return new StringContents(client.getNickname()).receiveData(in);
 
 			case LinKlipboard.IMAGE_TYPE:
-				//ImageIcon receiveImg = (ImageIcon) in.readObject();
-				//ImageContents contensImg = new ImageContents(client.getNickname(), receiveImg);
 				return new ImageContents(client.getNickname()).receiveData(in);
 
 			case LinKlipboard.FILE_TYPE:
@@ -80,7 +81,6 @@ public class TransferManager extends Thread {
 
 			}
 		} catch (ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -88,7 +88,13 @@ public class TransferManager extends Thread {
 
 	/**데이터를 직접 전송하는 부분 */
 	private void sendData() {
-
+		try {
+			Contents sendData = group.getLastContents();
+			out.writeObject(sendData);
+			out.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -103,6 +109,7 @@ public class TransferManager extends Thread {
 
 		case SEND: // 송신 
 			sendData();
+			break;
 		}
 
 		/* 소켓과 스트림을 닫는 부분 구현 */

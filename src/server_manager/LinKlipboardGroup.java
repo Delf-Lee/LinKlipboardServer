@@ -5,7 +5,9 @@ import java.util.Vector;
 
 import org.omg.PortableInterceptor.ClientRequestInfoOperations;
 
-import datamanage.Contents;
+import com.sun.jndi.url.corbaname.corbanameURLContextFactory;
+
+import contents.Contents;
 import datamanage.History;
 
 public class LinKlipboardGroup {
@@ -44,7 +46,7 @@ public class LinKlipboardGroup {
 		setDefaultNickname(newClient);
 		if (clients.size() < LinKlipboard.MAX_CLIENT) {
 			//clients.add(newClient);
-			clients.put(newClient.getNickname(), newClient);
+			clients.put(newClient.getRemoteAddr(), newClient);
 		}
 	}
 
@@ -113,6 +115,10 @@ public class LinKlipboardGroup {
 
 	private void setHistory() {
 
+	}
+
+	public Contents getLastContents() {
+		return lastContents;
 	}
 
 	public ClientHandler searchClient(String nickname) {
