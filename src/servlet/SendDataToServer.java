@@ -30,12 +30,11 @@ public class SendDataToServer extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// 데이터 수신
 		String groupName = request.getParameter("groupName");
-		String nickname = request.getParameter("nickname");
 		int type = Integer.parseInt(request.getParameter("type"));
 		String ipAddr = request.getRemoteAddr();
 
 		LinKlipboardGroup targetGroup = LinKlipboardServer.getGroup(groupName); // 그룹 객체 가져옴
-		ClientHandler client = targetGroup.searchClient(nickname); // 그룹에서 클라이언트 특정
+		ClientHandler client = targetGroup.searchClient(ipAddr); // 그룹에서 클라이언트 특정
 		new TransferManager(targetGroup, client, type).createReceiveThread(); // 수신 스레드 생성
 	}
 }

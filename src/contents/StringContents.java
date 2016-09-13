@@ -33,4 +33,3 @@ public class StringContents extends Contents {
 		return this;
 	}
 }
-

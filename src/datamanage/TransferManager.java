@@ -1,8 +1,11 @@
 package datamanage;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -19,13 +22,17 @@ public class TransferManager extends Thread {
 	private ClientHandler client;
 	private int type;
 
+	private static final int port = 20;
 	private Socket socket;
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
 
-	private int process;
-	private final static int RECEIVE = 1;
-	private final static int SEND = 0;
+	private DataOutputStream dOut;
+	private DataInputStream dIn;
+
+	private int process; // 수행할 스레드 작업
+	private final static int RECEIVE = 1; // 수신 작업
+	private final static int SEND = 0; // 송신 작업
 
 	public TransferManager(LinKlipboardGroup group, ClientHandler client, int dataType) {
 		this.client = client;
@@ -34,7 +41,7 @@ public class TransferManager extends Thread {
 	}
 
 	/** 클라이언트의 소켓에 연결을 요청한다. */
-	public void setConnection() {
+	private void connectToSocket() {
 		try {
 			String ipAddr = client.getRemoteAddr();
 			int portNum = client.getRemotePort();
@@ -45,8 +52,6 @@ public class TransferManager extends Thread {
 			// 스트림 설정
 			out = new ObjectOutputStream(socket.getOutputStream());
 			in = new ObjectInputStream(socket.getInputStream());
-
-			//Contents c = new ImageContents("");
 
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -78,7 +83,6 @@ public class TransferManager extends Thread {
 
 			case LinKlipboard.FILE_TYPE:
 				return null;
-
 			}
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
@@ -102,7 +106,7 @@ public class TransferManager extends Thread {
 
 		switch (process) {
 		case RECEIVE: // 수신
-			setConnection();
+			connectToSocket();
 			Contents contents = receiveData();
 			group.setLastContents(contents);
 			break;
@@ -111,7 +115,10 @@ public class TransferManager extends Thread {
 			sendData();
 			break;
 		}
-
-		/* 소켓과 스트림을 닫는 부분 구현 */
+		try {
+			in.close();
+			socket.close();
+		} catch (IOException e) {
+		}
 	}
 }

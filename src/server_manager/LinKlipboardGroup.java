@@ -34,7 +34,7 @@ public class LinKlipboardGroup {
 		this.chief = chief;
 
 		//clients = new Vector<ClientHandler>(LinKlipboard.MAX_CLIENT - 1);
-		clients = new Hashtable<String, ClientHandler>(LinKlipboard.MAX_CLIENT - 1);
+		clients = new Hashtable<String, ClientHandler>(LinKlipboard.MAX_CLIENT - 1); // <ip, client>
 		joinGroup(chief);
 		chief.setNickname(DEFAULT_CHIEF_NAME);
 	}
@@ -45,7 +45,6 @@ public class LinKlipboardGroup {
 		// 클라이언트를 추가
 		setDefaultNickname(newClient);
 		if (clients.size() < LinKlipboard.MAX_CLIENT) {
-			//clients.add(newClient);
 			clients.put(newClient.getRemoteAddr(), newClient);
 		}
 	}
@@ -121,8 +120,15 @@ public class LinKlipboardGroup {
 		return lastContents;
 	}
 
-	public ClientHandler searchClient(String nickname) {
-		return clients.get(nickname);
+	public ClientHandler searchClient(String ipAddr) {
+		return clients.get(ipAddr);
+	}
+
+	public String getNickname(String ipAddr) {
+		if (clients.containsKey(ipAddr)) {
+			return clients.get(ipAddr).getNickname();
+		}
+		return null;
 	}
 
 	class Notification extends Thread {

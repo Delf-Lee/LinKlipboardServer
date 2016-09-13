@@ -7,6 +7,8 @@ public class LinKlipboard {
 
 	public final static int NULL = -1;
 	public final static int ACCESS_PERMIT = 100; // 접송 승인
+	public final static int READY_TO_TRANSFER = 101; // 전송 준비 됨
+	
 	public final static int ERROR_DUPLICATED_GROUPNAME = 200; // 중복된 그룹 이름
 	public final static int ERROR_NO_MATCHED_GROUPNAME = 201; // 해당 이름의 그룹 없음
 	public final static int ERROR_PASSWORD_INCORRECT = 202; // 패스워드 불일치
