@@ -40,28 +40,21 @@ public class LinKlipboardGroup {
 	}
 
 	/** 새 클라이언트를 그룹에 추가한다. 
-	 * @param newClient 그룹에 추가할 클라이언트의 핸들러 */
+	 * @param newClient 그룹에 추가할 클라이언트의 핸들러 
+	 * @return 그룹원의 수가 MAX_CLIENT미만일 경우 true 그렇지 않으면 false. */
 	public void joinGroup(ClientHandler newClient) {
 		// 클라이언트를 추가
 		setDefaultNickname(newClient);
-		if (clients.size() < LinKlipboard.MAX_CLIENT) {
-			clients.put(newClient.getRemoteAddr(), newClient);
-		}
+		clients.put(newClient.getRemoteAddr(), newClient);
 	}
 
 	/** 그룹 내에서 각 클라이언트에게 중복되지 않은 기본 닉네임을 부여한다. 
 	 * @param newClient  설정할 클라이언트의 핸들러 */
 	public void setDefaultNickname(ClientHandler newClient) {
-		//		for (int i = 0; i < clients.size(); i++) {
-		//			if (!newClient.getNickname().equals(DEFAULT_CREW_NAME + i + 1)) {
-		//				newClient.setNickname(DEFAULT_CREW_NAME + i + 1);
-		//				break;
-		//			}
-		//		}
-		for (int i = 0; i < clients.size(); i++) {
+		for (int i = 0;; i++) {
 			if (!clients.containsKey(DEFAULT_CREW_NAME + i + 1)) {
 				newClient.setNickname(DEFAULT_CREW_NAME + i + 1);
-				break;
+				return;
 			}
 		}
 	}

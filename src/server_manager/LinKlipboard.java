@@ -15,8 +15,12 @@ public class LinKlipboard {
 	public final static int ERROR_SOCKET_CONNECTION = 203; // 소켓 연결 오류
 	public final static int ERROR_DATA_TRANSFER = 204; // 데이터 송수신 오류
 	public final static int ERROR_TRYCATCH = 205;
+	public final static int ERROR_FULL_GROUP = 206;
+	public final static int ERROR_FULL_CLIENT = 207;
 
 	public final static int STRING_TYPE = 10;
 	public final static int IMAGE_TYPE = 11;
 	public final static int FILE_TYPE = 12;
+	
+	public final static String SEPARATOR = ";"; 
 }
