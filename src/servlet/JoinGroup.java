@@ -14,21 +14,22 @@ import server_manager.LinKlipboard;
 import server_manager.LinKlipboardGroup;
 import server_manager.LinKlipboardServer;
 import server_manager.Logger;
-import sun.security.util.Password;
 
-@WebServlet("/joinClient")
+@WebServlet("/JoinGroup")
 public class JoinGroup extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	public JoinGroup() {
 		super();
 	}
-
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.getWriter().append("Hrer is joinGroup servlet URL").append(request.getContextPath());
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// 정보 받음
-		String groupName = request.getParameter("groupName");
-		String password = request.getParameter("password");
-		char[] pw = Password.readPassword(request.getInputStream());
+		String[] info = request.getParameter("info").split(":");
+		String groupName = info[0];
+		String password = info[1];
 
 		String respone = null;
 
@@ -52,7 +53,7 @@ public class JoinGroup extends HttpServlet {
 					group.joinGroup(newClient); // 그룹에 추가
 					// 응답: 허가코드 + 기본 닉네임
 					respone = LinKlipboard.ACCESS_PERMIT + LinKlipboard.SEPARATOR + newClient.getNickname();
-					Logger.accessClient(Logger.JOIN_GROUP, newClient);
+					Logger.logJoinClient(groupName, newClient);
 				}
 			}
 		}

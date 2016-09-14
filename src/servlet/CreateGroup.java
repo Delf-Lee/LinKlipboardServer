@@ -28,9 +28,12 @@ public class CreateGroup extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String groupName = request.getParameter("groupName");
-		String password = request.getParameter("password");
-
+//		String groupName = request.getParameter("groupName");
+//		String password = request.getParameter("password");
+		String[] info = request.getParameter("info").split(":");
+		String groupName = info[0];
+		String password = info[1];
+		
 		String respone = null;
 
 		// 1. 서버 수 체크
@@ -48,7 +51,7 @@ public class CreateGroup extends HttpServlet {
 
 				// 응답: 허가코드 + 닉네임
 				respone = LinKlipboard.ACCESS_PERMIT + LinKlipboard.SEPARATOR + LinKlipboardGroup.DEFAULT_CHIEF_NAME;
-				Logger.accessClient(Logger.CREATE_GROUP, cheif);
+				Logger.logCreateGroup(groupName, cheif);
 			}
 		}
 

@@ -10,26 +10,26 @@ public class Logger {
 	public final static int RECEIVE = 51;
 
 	public final static int CREATE_GROUP = 60;
-	public final static int JOIN_GROUP = 61;
-	public final static int DESTROYD_GROUP = 62;
+	public final static int DESTROYD_GROUP = 61;
+	public final static int JOIN_CLIENT = 62;
+	public final static int EXIT_CLIENT = 63;
 
-	public static void accessClient(int access, ClientHandler client) {
-
+	
+	public static void logCreateGroup(String groupName, ClientHandler client) {
 		Date now = new Date();
 		String ipAddr = client.getRemoteAddr();
 		int port = client.getRemotePort();
-		String status = null;
-		switch (access) {
-		case CREATE_GROUP:
-			status = " create the group";
-			break; //
-
-		case JOIN_GROUP:
-			status = " join the group";
-			break;
-		}
-
-		String prtMsg = "[" + now + "] " + ipAddr + ":" + port + status + "(Group count: " + LinKlipboardServer.getGroupCnt() + ")";
+		
+		String prtMsg = "[" + now + "] " + ipAddr + ":" + port + " create the group.(Group name: " + groupName + ", Total group: " + LinKlipboardServer.getGroupCnt() + ")";
+		System.out.println(prtMsg);
+	}
+	
+	public static void logJoinClient(String groupName, ClientHandler client) {
+		Date now = new Date();
+		String ipAddr = client.getRemoteAddr();
+		int port = client.getRemotePort();
+		
+		String prtMsg = "[" + now + "] " + ipAddr + ":" + port + " join the group.(Group name: " + groupName + ", Total group: " + LinKlipboardServer.getGroupCnt() + ")";
 		System.out.println(prtMsg);
 	}
 
