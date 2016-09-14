@@ -3,7 +3,8 @@ package server_manager;
 import java.util.Hashtable;
 
 public class LinKlipboardServer {
-	private static Hashtable<String, LinKlipboardGroup> groups; // 임시 그룹 모임 1
+	private static Hashtable<String, LinKlipboardGroup> groups = new Hashtable<String, LinKlipboardGroup>(); // 임시 그룹 모임 1
+	public static Logger logger = new Logger();
 
 	/** 새로운 그룹을 생성 
 	 * @param newGroup 새로 생성할 그룹 */
@@ -42,4 +43,7 @@ public class LinKlipboardServer {
 		return groups.get(groupName);
 	}
 
+	public static int getGroupCnt() {
+		return groups.size();
+	}
 }

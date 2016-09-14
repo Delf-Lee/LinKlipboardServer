@@ -13,6 +13,7 @@ import server_manager.ClientHandler;
 import server_manager.LinKlipboard;
 import server_manager.LinKlipboardGroup;
 import server_manager.LinKlipboardServer;
+import server_manager.Logger;
 
 @WebServlet("/CreateGroup")
 public class CreateGroup extends HttpServlet {
@@ -44,12 +45,13 @@ public class CreateGroup extends HttpServlet {
 			else {
 				ClientHandler cheif = new ClientHandler(request, groupName); // 방장(이하 치프) 생성
 				LinKlipboardGroup group = new LinKlipboardGroup(groupName, password, cheif); // 그룹 생성
-				
-				// 응답: 허가코드 + 닉네임 
-				respone = Integer.toString(LinKlipboard.ACCESS_PERMIT) + LinKlipboard.SEPARATOR + LinKlipboardGroup.DEFAULT_CHIEF_NAME; 
+
+				// 응답: 허가코드 + 닉네임
+				respone = LinKlipboard.ACCESS_PERMIT + LinKlipboard.SEPARATOR + LinKlipboardGroup.DEFAULT_CHIEF_NAME;
+				Logger.accessClient(Logger.CREATE_GROUP, cheif);
 			}
 		}
-		
+
 		// 전송
 		PrintWriter out = response.getWriter();
 		out.println(respone);

@@ -13,6 +13,7 @@ import server_manager.ClientHandler;
 import server_manager.LinKlipboard;
 import server_manager.LinKlipboardGroup;
 import server_manager.LinKlipboardServer;
+import server_manager.Logger;
 import sun.security.util.Password;
 
 @WebServlet("/joinClient")
@@ -51,6 +52,7 @@ public class JoinGroup extends HttpServlet {
 					group.joinGroup(newClient); // 그룹에 추가
 					// 응답: 허가코드 + 기본 닉네임
 					respone = LinKlipboard.ACCESS_PERMIT + LinKlipboard.SEPARATOR + newClient.getNickname();
+					Logger.accessClient(Logger.JOIN_GROUP, newClient);
 				}
 			}
 		}
