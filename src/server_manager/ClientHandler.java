@@ -13,7 +13,7 @@ public class ClientHandler {
 	protected int localPort; // 서버의 포트 번호
 	protected Socket socket; // 클라이언트와의 소켓
 
-//	protected LinKlipboardGroup myGroup;
+	//	protected LinKlipboardGroup myGroup;
 
 	public ClientHandler(HttpServletRequest client, String groupName) {
 		//this.client = client;
@@ -25,8 +25,14 @@ public class ClientHandler {
 		}
 	}
 
+	/** @param 변경할 클라이언트의 닉네임 */
 	public void setNickname(String nickName) {
 		this.nickName = nickName;
+	}
+
+	/** @return 클라이언트가 속한 그룹 이름*/
+	public String getGroupName() {
+		return groupName;
 	}
 
 	public void setGroupName(String groupName) {

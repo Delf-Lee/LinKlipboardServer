@@ -30,7 +30,6 @@ public class ReceiveDataToServer extends HttpServlet {
 
 		LinKlipboardGroup targetGroup = LinKlipboardServer.getGroup(groupName); // 그룹 객체 가져옴
 		ClientHandler client = targetGroup.searchClient(ipAddr); // 그룹에서 클라이언트 특정
-		new TransferManager(targetGroup, client, type).createReceiveThread(); // 수신 스레드 생성
+		new TransferManager(targetGroup, client, type).createReceiveThread(response.getWriter()); // 수신 스레드 생성
 	}
-
 }

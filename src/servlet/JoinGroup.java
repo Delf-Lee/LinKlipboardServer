@@ -22,9 +22,11 @@ public class JoinGroup extends HttpServlet {
 	public JoinGroup() {
 		super();
 	}
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.getWriter().append("Hrer is joinGroup servlet URL").append(request.getContextPath());
 	}
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// 정보 받음
 		String[] info = request.getParameter("info").split(":");
@@ -53,7 +55,7 @@ public class JoinGroup extends HttpServlet {
 					group.joinGroup(newClient); // 그룹에 추가
 					// 응답: 허가코드 + 기본 닉네임
 					respone = LinKlipboard.ACCESS_PERMIT + LinKlipboard.SEPARATOR + newClient.getNickname();
-					Logger.logJoinClient(groupName, newClient);
+					Logger.logJoinClient(newClient);
 				}
 			}
 		}

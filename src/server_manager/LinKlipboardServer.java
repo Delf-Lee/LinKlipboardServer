@@ -1,6 +1,8 @@
 package server_manager;
 
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Set;
 
 public class LinKlipboardServer {
 	private static Hashtable<String, LinKlipboardGroup> groups = new Hashtable<String, LinKlipboardGroup>(); // 임시 그룹 모임 1
@@ -8,8 +10,9 @@ public class LinKlipboardServer {
 
 	/** 새로운 그룹을 생성 
 	 * @param newGroup 새로 생성할 그룹 */
-	public static void createGroup(LinKlipboardGroup newGroup, ClientHandler newClient) {
+	public static void createGroup(LinKlipboardGroup newGroup) {
 		if (!isFull()) {
+			System.out.println("그룹 생성");
 			groups.put(newGroup.getName(), newGroup);
 		}
 	}
@@ -45,5 +48,23 @@ public class LinKlipboardServer {
 
 	public static int getGroupCnt() {
 		return groups.size();
+	}
+
+	/** @param 서버에 접속한 클라이언트의 ip 주소 
+	 * @return 서버 내에 접속한 클라이언트와 중복된 ip 주소가 존재하면 true 아니면 false */
+	public static boolean checkDuplicatedIpAddr(String ip) {
+
+		if (groups.isEmpty())
+			return false;
+
+		Set<String> keys = groups.keySet();
+		Iterator<String> groupName = keys.iterator();
+		while (groupName.hasNext()) {
+			String name = groupName.next();
+			if (groups.get(name).isDuplicatedIpAddr(ip)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -6,6 +6,7 @@ import java.util.Vector;
 import org.omg.PortableInterceptor.ClientRequestInfoOperations;
 
 import com.sun.jndi.url.corbaname.corbanameURLContextFactory;
+import com.sun.security.ntlm.Client;
 
 import contents.Contents;
 import datamanage.History;
@@ -21,8 +22,8 @@ public class LinKlipboardGroup {
 	private History history; // 이 그룹의 히스토리
 	private Contents lastContents; // 최근 컨텐츠
 
-	public static final String DEFAULT_CHIEF_NAME = "그룹장";
-	public static final String DEFAULT_CREW_NAME = "그룹원";
+	public static final String DEFAULT_CHIEF_NAME = "Chief";
+	public static final String DEFAULT_CREW_NAME = "Crew";
 
 	/** 새로운 그룹을 생성
 	 * @param groupName 이 그룹의 이름
@@ -122,6 +123,10 @@ public class LinKlipboardGroup {
 			return clients.get(ipAddr).getNickname();
 		}
 		return null;
+	}
+	
+	public boolean isDuplicatedIpAddr(String ip) {
+		return clients.containsKey(ip);
 	}
 
 	class Notification extends Thread {
