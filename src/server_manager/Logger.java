@@ -67,7 +67,7 @@ public class Logger {
 	}
 
 	/** @return YYYY.MM.DD/HH:MM:SS 형식의 현재 시간 */
-	private static String now() {
+	public static String now() {
 		Calendar cal = Calendar.getInstance();
 		String year = Integer.toString(cal.get(Calendar.YEAR));
 		String month = Integer.toString(cal.get(Calendar.MONTH));
