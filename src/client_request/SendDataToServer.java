@@ -2,8 +2,6 @@ package client_request;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Date;
-import java.util.concurrent.TimeoutException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,7 +9,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import Transferer.TransferManager;
+import Transferer.ContentsReceiver;
+import Transferer.FileReceiver;
+import Transferer.Transfer;
 import server_manager.ClientHandler;
 import server_manager.LinKlipboard;
 import server_manager.LinKlipboardGroup;
@@ -47,22 +47,23 @@ public class SendDataToServer extends HttpServlet {
 		
 		PrintWriter out = response.getWriter();
 		
-		if(fileName != null) {
-			// 파일 이름이 왔을 경우
+		Transfer receiver; // 데이터를 받을 스레드
+		
+		if(fileName != null) { // 받을 파일이 파일인 경우
+			receiver = new FileReceiver(targetGroup, client, fileName);
+			sendRespond(receiver, out);
 		}
-		else {
-			// 파일 이름이 왔을 경우
-			TransferManager receiver = new TransferManager(targetGroup, client);
-			receiver.createReceiveThread(); // 수신 스레드 생성	
+		else { // 받을 파일이 컨텐츠인 경우
+			receiver = new ContentsReceiver(targetGroup, client);
 			sendRespond(receiver, out); // 응답 대기
 		}
 	}
 
 	/** 서버에서 소켓이 열릴 때 까지 응답 대기 */
-	private void sendRespond(TransferManager receiver, PrintWriter out) {
+	private void sendRespond(Transfer receiver, PrintWriter out) {
 		//Timer timer = new Timer(5); // 5초 타이머
 
-		while (!receiver.isConnected()) {
+		while (!receiver.isReady()) {
 			//			if (!timer.isAlive()) {
 			//				out.println(LinKlipboard.ERROR_SOCKET_CONNECTION); // 오류: 소켓 통신 오류
 			//				return;

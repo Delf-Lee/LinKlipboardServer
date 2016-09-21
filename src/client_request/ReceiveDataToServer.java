@@ -9,12 +9,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import Transferer.TransferManager;
+import Transferer.ContentsSender;
+import Transferer.Transfer;
 import server_manager.ClientHandler;
 import server_manager.LinKlipboard;
 import server_manager.LinKlipboardGroup;
 import server_manager.LinKlipboardServer;
-import sun.awt.image.ImageWatched.Link;
 
 @WebServlet("/ReceiveDataToServer")
 public class ReceiveDataToServer extends HttpServlet {
@@ -33,18 +33,17 @@ public class ReceiveDataToServer extends HttpServlet {
 		LinKlipboardGroup targetGroup = LinKlipboardServer.getGroup(groupName); // 그룹 객체 가져옴
 		ClientHandler client = targetGroup.searchClient(ipAddr); // 그룹에서 클라이언트 특정
 		
-		TransferManager sender = new TransferManager(targetGroup, client);
-		sender.createSendThread(); // 수신 스레드 생성
+		Transfer sender = new ContentsSender(targetGroup, client);
 		
 		PrintWriter out = response.getWriter();
 		sendRespond(sender, out); // 응답 대기
 	}
 	
 	/** 서버에서 소켓이 열릴 때 까지 응답 대기 */
-	public void sendRespond(TransferManager receiver, PrintWriter out) {
+	public void sendRespond(Transfer receiver, PrintWriter out) {
 		//Timer timer = new Timer(5); // 5초 타이머
 		
-		while (!receiver.isConnected()) {
+		while (!receiver.isReady()) {
 //			if (!timer.isAlive()) {
 //				out.println(LinKlipboard.ERROR_SOCKET_CONNECTION); // 오류: 소켓 통신 오류
 //				return;

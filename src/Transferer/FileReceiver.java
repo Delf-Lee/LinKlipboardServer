@@ -12,7 +12,7 @@ import server_manager.ClientHandler;
 import server_manager.LinKlipboard;
 import server_manager.LinKlipboardGroup;
 
-public class FileReceiver extends FileTransfer {
+public class FileReceiver extends Transfer {
 
 	// 스트림
 	private FileOutputStream fos;
@@ -31,6 +31,7 @@ public class FileReceiver extends FileTransfer {
 		this.start();
 	}
 
+	/** 클라이언트와 연결할 소켓을 생성하고 접속을 대기한다. */
 	@Override
 	public void setConnection() {
 		try {
@@ -47,9 +48,17 @@ public class FileReceiver extends FileTransfer {
 		}
 	}
 
+	/** 연결된 스트림과 소켓을 닫는다. */
 	@Override
 	public void closeSocket() {
-		// TODO Auto-generated method stub
+		try {
+			dis.close();
+			fos.close();
+			socket.close();
+			listener.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -58,7 +67,7 @@ public class FileReceiver extends FileTransfer {
 		// 연결 설정
 		setConnection();
 
-		fileName = checkFileNameDuplicated(); // 중복된 파일명을 확인하고 중복됐다면 파일명에 숫자를 붙여 변경한다.
+		// fileName = checkFileNameDuplicated(); // 중복된 파일명을 확인하고 중복됐다면 파일명에 숫자를 붙여 변경한다.
 		receiveFile = new File(group.getFileDir() + "\\" + fileName); // 새로운 파일명으로 새 파일 생성
 		try {
 			int byteSize = BYTE_SIZE;
@@ -66,6 +75,7 @@ public class FileReceiver extends FileTransfer {
 
 			fos = new FileOutputStream(receiveFile.getPath()); // 지정한 경로에 바이트 배열을 쓰기위한 파일 스트림 생성
 
+			// 파일 전송
 			int EndOfFile = 0;
 			while ((EndOfFile = dis.read(ReceiveByteArrayToFile)) != -1) {
 				fos.write(ReceiveByteArrayToFile, 0, EndOfFile);

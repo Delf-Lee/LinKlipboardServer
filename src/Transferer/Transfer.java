@@ -6,7 +6,7 @@ import java.net.Socket;
 import server_manager.ClientHandler;
 import server_manager.LinKlipboardGroup;
 
-abstract public class FileTransfer extends Thread {
+abstract public class Transfer extends Thread {
 	
 	protected ServerSocket listener;
 	protected Socket socket;
@@ -17,7 +17,7 @@ abstract public class FileTransfer extends Thread {
 	protected static final int BYTE_SIZE = 65536;
 	protected boolean ready = false;
 
-	public FileTransfer(LinKlipboardGroup group, ClientHandler client) {
+	public Transfer(LinKlipboardGroup group, ClientHandler client) {
 		this.group = group;
 		this.client = client;
 	}
