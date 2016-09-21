@@ -24,4 +24,6 @@ public class LinKlipboard {
 	public final static int FILE_TYPE = 12;
 	
 	public final static String SEPARATOR = ";"; 
+	
+	public final static int FTP_PORT = 20;
 }

@@ -1,5 +1,6 @@
 package server_manager;
 
+import java.io.File;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -25,6 +26,8 @@ public class LinKlipboardGroup {
 	public static final String DEFAULT_CHIEF_NAME = "Chief";
 	public static final String DEFAULT_CREW_NAME = "Crew";
 
+	private static String fileSaveDir = "C:\\Program Files\\LinKlipboardServer";
+
 	/** 새로운 그룹을 생성
 	 * @param groupName 이 그룹의 이름
 	 * @param password 이 그룹에 접속하기 위한 패스워드
@@ -38,6 +41,7 @@ public class LinKlipboardGroup {
 		clients = new Hashtable<String, ClientHandler>(LinKlipboard.MAX_CLIENT - 1); // <ip, client>
 		joinGroup(chief);
 		chief.setNickname(DEFAULT_CHIEF_NAME);
+		createFileReceiveFolder();
 	}
 
 	/** 새 클라이언트를 그룹에 추가한다. 
@@ -124,9 +128,42 @@ public class LinKlipboardGroup {
 		}
 		return null;
 	}
-	
+
 	public boolean isDuplicatedIpAddr(String ip) {
 		return clients.containsKey(ip);
+	}
+
+	/** 그룹에서 공유될 파일을 저장할 폴더를 생성한다. */
+	private void createFileReceiveFolder() {
+		File fileReceiveFolder = new File(getFileDir());
+
+		if (!fileReceiveFolder.exists()) {
+			fileReceiveFolder.mkdir(); // 폴더 생성
+		}
+		else {
+			initDir(fileReceiveFolder);
+		}
+	}
+
+	public String getFileDir() {
+		return (fileSaveDir + "\\" + groupName);
+	}
+
+	private void initDir(File d) {
+		File dir = new File(fileSaveDir);
+		File[] innerFile = dir.listFiles(); // 폴더 내 존재하는 파일을 innerFile에 넣음
+		for (File file : innerFile) { // innerFile의 크기만큼 for문을 돌면서
+			file.delete(); // 파일 삭제
+			System.out.println("C:\\Program Files\\LinKlipboard폴더 안의 파일 삭제");
+		}
+		// Dir안에 파일이 하나만 있는 경우에 사용 가능
+		// innerFile[0].delete();  
+	}
+
+	public void destroyGroup() {
+		File fileReceiveFolder = new File(getFileDir()); // 그룹 공유 폴더 객체 가져옴
+		initDir(fileReceiveFolder); // 폴더 내 파일 모두 삭제
+		fileReceiveFolder.delete(); // 폴더 삭제
 	}
 
 	class Notification extends Thread {
