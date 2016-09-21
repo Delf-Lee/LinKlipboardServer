@@ -36,9 +36,12 @@ public class FileReceiver extends Transfer {
 	public void setConnection() {
 		try {
 			// 소켓 접속 설정
+			System.out.println(" - 소켓 생성 중");
 			listener = new ServerSocket(LinKlipboard.FTP_PORT);
+			System.out.println(" - 연결 준비 완료 / 접속 대기 중");
 			ready = true;
 			socket = listener.accept();
+			System.out.println(" - 클라이언트 접속");
 
 			dis = new DataInputStream(socket.getInputStream()); // 바이트 배열을 받기 위한 데이터스트림 생성
 
@@ -77,11 +80,13 @@ public class FileReceiver extends Transfer {
 
 			// 파일 전송
 			int EndOfFile = 0;
+			System.out.println(" - 파일 수신 시도");
 			while ((EndOfFile = dis.read(ReceiveByteArrayToFile)) != -1) {
 				fos.write(ReceiveByteArrayToFile, 0, EndOfFile);
 			}
 
 			closeSocket(); // 소켓 닫기
+			System.out.println("소켓 닫음");
 
 		} catch (IOException e) {
 			closeSocket();

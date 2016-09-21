@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import Transferer.ContentsSender;
+import Transferer.FileSender;
 import Transferer.Transfer;
 import server_manager.ClientHandler;
 import server_manager.LinKlipboard;
@@ -33,7 +34,12 @@ public class ReceiveDataToServer extends HttpServlet {
 		LinKlipboardGroup targetGroup = LinKlipboardServer.getGroup(groupName); // 그룹 객체 가져옴
 		ClientHandler client = targetGroup.searchClient(ipAddr); // 그룹에서 클라이언트 특정
 		
-		Transfer sender = new ContentsSender(targetGroup, client);
+		Transfer sender;
+		if (targetGroup.getLastContents().getType() == LinKlipboard.FILE_TYPE) {
+			sender = new FileSender(targetGroup, client);
+		} else {
+			sender = new ContentsSender(targetGroup, client);
+		}
 		
 		PrintWriter out = response.getWriter();
 		sendRespond(sender, out); // 응답 대기
