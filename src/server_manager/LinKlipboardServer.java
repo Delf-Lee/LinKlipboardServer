@@ -5,8 +5,13 @@ import java.util.Iterator;
 import java.util.Set;
 
 public class LinKlipboardServer {
+
 	private static Hashtable<String, LinKlipboardGroup> groups = new Hashtable<String, LinKlipboardGroup>(); // 임시 그룹 모임 1
 	public static Logger logger = new Logger();
+
+	public LinKlipboardServer() {
+		Directory.createEmptyDirectory(LinKlipboard.FILE_DIR);
+	}
 
 	/** 새로운 그룹을 생성 
 	 * @param newGroup 새로 생성할 그룹 */

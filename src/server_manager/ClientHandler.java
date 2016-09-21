@@ -25,7 +25,7 @@ public class ClientHandler {
 		}
 	}
 
-	/** @param 변경할 클라이언트의 닉네임 */
+	/** @param nickName 변경할 클라이언트의 닉네임 */
 	public void setNickname(String nickName) {
 		this.nickName = nickName;
 	}

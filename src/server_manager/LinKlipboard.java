@@ -22,8 +22,10 @@ public class LinKlipboard {
 	public final static int STRING_TYPE = 10;
 	public final static int IMAGE_TYPE = 11;
 	public final static int FILE_TYPE = 12;
-	
-	public final static String SEPARATOR = ";"; 
+	public final static String SEPARATOR = ";";
+	public final static String FILE_DIR = "C:\\LinKlipboardServer"; 
 	
 	public final static int FTP_PORT = 20;
+	
+	
 }

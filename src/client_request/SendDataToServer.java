@@ -48,9 +48,10 @@ public class SendDataToServer extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		
 		if(fileName != null) {
-			
+			// 파일 이름이 왔을 경우
 		}
 		else {
+			// 파일 이름이 왔을 경우
 			TransferManager receiver = new TransferManager(targetGroup, client);
 			receiver.createReceiveThread(); // 수신 스레드 생성	
 			sendRespond(receiver, out); // 응답 대기

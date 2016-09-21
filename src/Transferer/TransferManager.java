@@ -49,25 +49,6 @@ public class TransferManager extends Thread {
 		this.group = group;
 	}
 
-	/** 클라이언트의 소켓에 연결을 요청한다. */
-	// private void connectToSocket() {
-	// try {
-	// String ipAddr = client.getRemoteAddr();
-	// int portNum = client.getRemotePort();
-	//
-	// // 소켓 접속 설정
-	// socket = new Socket(ipAddr, port);
-	//
-	// // 스트림 설정
-	// out = new ObjectOutputStream(socket.getOutputStream());
-	// in = new ObjectInputStream(socket.getInputStream());
-	//
-	// } catch (UnknownHostException e) {
-	// e.printStackTrace();
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	// }
 
 	private void createReceiveSokcet() {
 		System.out.println("소켓 연다");
@@ -128,8 +109,7 @@ public class TransferManager extends Thread {
 	/**
 	 * 데이터 수신하는 스레드를 생성한다. 정확히는 스레드에서 데이터를 수신하는 부분만 실행한다.
 	 * 
-	 * @param out
-	 *            클라이언트에게 응답을 전송할 스트림. 소켓이 열린 후에 클라이언트가 접속해야 하기 때문에 스레드에서 클라이언트의
+	 * @param out 클라이언트에게 응답을 전송할 스트림. 소켓이 열린 후에 클라이언트가 접속해야 하기 때문에 스레드에서 클라이언트의
 	 *            접속이 감지될 때, 응답을 시행한다.
 	 */
 	public void createReceiveThread() {

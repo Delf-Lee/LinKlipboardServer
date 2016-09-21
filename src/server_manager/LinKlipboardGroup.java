@@ -1,13 +1,11 @@
 package server_manager;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Hashtable;
-import java.util.Vector;
-
-import org.omg.PortableInterceptor.ClientRequestInfoOperations;
-
-import com.sun.jndi.url.corbaname.corbanameURLContextFactory;
-import com.sun.security.ntlm.Client;
 
 import contents.Contents;
 import datamanage.History;
@@ -26,7 +24,7 @@ public class LinKlipboardGroup {
 	public static final String DEFAULT_CHIEF_NAME = "Chief";
 	public static final String DEFAULT_CREW_NAME = "Crew";
 
-	private static String fileSaveDir = "C:\\Program Files\\LinKlipboardServer";
+	private static String fileSaveDir = "C:\\LinKlipboardServer";
 
 	/** 새로운 그룹을 생성
 	 * @param groupName 이 그룹의 이름
@@ -42,6 +40,7 @@ public class LinKlipboardGroup {
 		joinGroup(chief);
 		chief.setNickname(DEFAULT_CHIEF_NAME);
 		createFileReceiveFolder();
+		System.out.println("폴더 생성");
 	}
 
 	/** 새 클라이언트를 그룹에 추가한다. 
@@ -145,30 +144,59 @@ public class LinKlipboardGroup {
 		}
 	}
 
+	/** @return 그룹에서 공유한 파일들이 저장되어 있는 폴더의 경로 문자열*/
 	public String getFileDir() {
 		return (fileSaveDir + "\\" + groupName);
 	}
 
+	/** 그룹에서 공유한 파일들이 저장되어 있는 폴더 초기화(폴더 내 파일 모두 삭제) */
 	private void initDir(File d) {
 		File dir = new File(fileSaveDir);
 		File[] innerFile = dir.listFiles(); // 폴더 내 존재하는 파일을 innerFile에 넣음
 		for (File file : innerFile) { // innerFile의 크기만큼 for문을 돌면서
 			file.delete(); // 파일 삭제
-			System.out.println("C:\\Program Files\\LinKlipboard폴더 안의 파일 삭제");
 		}
 		// Dir안에 파일이 하나만 있는 경우에 사용 가능
 		// innerFile[0].delete();  
 	}
 
+	/** 그룹원이 0가 되면 객체을 파괴 */
 	public void destroyGroup() {
 		File fileReceiveFolder = new File(getFileDir()); // 그룹 공유 폴더 객체 가져옴
 		initDir(fileReceiveFolder); // 폴더 내 파일 모두 삭제
 		fileReceiveFolder.delete(); // 폴더 삭제
 	}
 
+	/** 공유 데이터가 업로드 된 사실을 클라이언트에게 알리는 스레드 */
 	class Notification extends Thread {
-		public void run() {
-			//  모든 클라이언트에게 알림 송신
+		private ClientHandler client;
+		private Socket socket;
+		private ObjectOutputStream out;
+
+		public Notification(ClientHandler client) {
+			this.client = client;
 		}
+
+		/** 클라이언트에게 연결을 시도하고 스트림 생성 */
+		private void setConnetion() {
+			try {
+				// 소켓 접속 설정
+				socket = new Socket(client.getRemoteAddr(), LinKlipboard.FTP_PORT);
+				// 스트림 설정
+				out = new ObjectOutputStream(socket.getOutputStream());
+
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		public void run() {
+			setConnetion();
+			Contents sendContents; // 전송할 객체를 시스템 클립보드로부터 가져옴
+			// out.writeObject(sendContents); // Contents 객체 전송
+		}
+
 	}
 }
