@@ -1,9 +1,8 @@
 package Transferer;
 
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 
@@ -53,13 +52,14 @@ public class FileSender extends Transfer {
 	@Override
 	public void run() {
 		setConnection();
+		
 		FileContents sendContents = (FileContents) group.getLastContents(); // 그룹의 최신데이터를 가져온다.
-		String sendFilePath = sendContents.getFilePath(); // 파일이 저장되어 있는 경로를 가져온다. 
+		File sendFile = new File(sendContents.getFilePath()); // 파일이 저장되어 있는 경로를 가져온다. 
 
 		try {
 			byte[] ReceiveByteArrayToFile = new byte[BYTE_SIZE];
 
-			fis = new FileInputStream(sendFilePath);
+			fis = new FileInputStream(sendFile);
 
 			int EndOfFile = 0;
 			while ((EndOfFile = fis.read(ReceiveByteArrayToFile)) != -1) {
