@@ -19,6 +19,7 @@ public class FileContents extends Contents implements Serializable {
 	}
 	
 	public FileContents(File file) {
+		this();
 		fileName = file.getName();
 		fileSize = file.length();
 		filePath = file.getPath();
