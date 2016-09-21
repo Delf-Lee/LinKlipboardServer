@@ -17,7 +17,7 @@ import server_manager.LinKlipboard;
 import server_manager.LinKlipboardGroup;
 import server_manager.LinKlipboardServer;
 
-/** 클라이언트가 서버에게 데이터를 보낼 때, 이 서블릿이 호출되어 실행된다. */ 
+/** 클라이언트가 서버에게 데이터를 보낼 때, 이 서블릿이 호출되어 실행된다. */
 @WebServlet("/SendDataToServer")
 public class SendDataToServer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -38,22 +38,23 @@ public class SendDataToServer extends HttpServlet {
 		// 데이터 수신
 		String groupName = request.getParameter("groupName");
 		String fileName = request.getParameter("fileName");
-
+		System.out.println( "- client trying uploading... group name; " + groupName + ", file name: " + fileName);
 		String ipAddr = request.getRemoteAddr();
 
 		LinKlipboardGroup targetGroup = LinKlipboardServer.getGroup(groupName); // 그룹 객체 가져옴
-		System.out.println("test:" + ipAddr);
 		ClientHandler client = targetGroup.searchClient(ipAddr); // 그룹에서 클라이언트 특정
-		
+
 		PrintWriter out = response.getWriter();
-		
+
 		Transfer receiver; // 데이터를 받을 스레드
-		
-		if(fileName != null) { // 받을 파일이 파일인 경우
+
+		if (fileName != null) { // 받을 파일이 파일인 경우
+			System.out.println("type: file");
 			receiver = new FileReceiver(targetGroup, client, fileName);
 			sendRespond(receiver, out);
 		}
 		else { // 받을 파일이 컨텐츠인 경우
+			System.out.println("type: contents");
 			receiver = new ContentsReceiver(targetGroup, client);
 			sendRespond(receiver, out); // 응답 대기
 		}
@@ -75,7 +76,7 @@ public class SendDataToServer extends HttpServlet {
 	private boolean isClientReady() {
 		return true;
 	}
-	
+
 	private String getFileName(String repone) {
 		String[] info = repone.split(";");
 		try {

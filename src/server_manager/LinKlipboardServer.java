@@ -10,14 +10,15 @@ public class LinKlipboardServer {
 	public static Logger logger = new Logger();
 
 	public LinKlipboardServer() {
+		System.out.println(" - Boot Server");
 		Directory.createEmptyDirectory(LinKlipboard.FILE_DIR);
+		System.out.println(" - Create directory to store files ");
 	}
 
 	/** 货肺款 弊缝阑 积己 
 	 * @param newGroup 货肺 积己且 弊缝 */
 	public static void createGroup(LinKlipboardGroup newGroup) {
 		if (!isFull()) {
-			System.out.println("弊缝 积己");
 			groups.put(newGroup.getName(), newGroup);
 		}
 	}
