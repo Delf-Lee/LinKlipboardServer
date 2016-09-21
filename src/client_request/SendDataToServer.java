@@ -22,9 +22,6 @@ import server_manager.LinKlipboardServer;
 public class SendDataToServer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	private static final int IS_READY = 0;
-	private static final int FILE_NAME = 1;
-
 	public SendDataToServer() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -38,7 +35,7 @@ public class SendDataToServer extends HttpServlet {
 		// 데이터 수신
 		String groupName = request.getParameter("groupName");
 		String fileName = request.getParameter("fileName");
-		System.out.println( "- client trying uploading... group name; " + groupName + ", file name: " + fileName);
+		System.out.println("- client trying uploading... group name; " + groupName + ", file name: " + fileName);
 		String ipAddr = request.getRemoteAddr();
 
 		LinKlipboardGroup targetGroup = LinKlipboardServer.getGroup(groupName); // 그룹 객체 가져옴
@@ -49,12 +46,13 @@ public class SendDataToServer extends HttpServlet {
 		Transfer receiver; // 데이터를 받을 스레드
 
 		if (fileName != null) { // 받을 파일이 파일인 경우
-			System.out.println("type: file");
+			if(!fileName.contains(".")) {
+				out.println(LinKlipboard.ERROR_NOT_SUPPORTED);
+			}
 			receiver = new FileReceiver(targetGroup, client, fileName);
 			sendRespond(receiver, out);
 		}
 		else { // 받을 파일이 컨텐츠인 경우
-			System.out.println("type: contents");
 			receiver = new ContentsReceiver(targetGroup, client);
 			sendRespond(receiver, out); // 응답 대기
 		}
@@ -62,28 +60,15 @@ public class SendDataToServer extends HttpServlet {
 
 	/** 서버에서 소켓이 열릴 때 까지 응답 대기 */
 	private void sendRespond(Transfer receiver, PrintWriter out) {
-		//Timer timer = new Timer(5); // 5초 타이머
+		Timer timer = new Timer(5); // 5초 타이머
 
 		while (!receiver.isReady()) {
-			//			if (!timer.isAlive()) {
-			//				out.println(LinKlipboard.ERROR_SOCKET_CONNECTION); // 오류: 소켓 통신 오류
-			//				return;
-			//			}
+			if (!timer.isAlive()) {
+				out.println(LinKlipboard.ERROR_SOCKET_CONNECTION); // 오류: 소켓 통신 오류
+				return;
+			}
 		}
 		out.println(LinKlipboard.READY_TO_TRANSFER);
-	}
-
-	private boolean isClientReady() {
-		return true;
-	}
-
-	private String getFileName(String repone) {
-		String[] info = repone.split(";");
-		try {
-			return info[FILE_NAME];
-		} catch (ArrayIndexOutOfBoundsException e) {
-			return null;
-		}
 	}
 
 	/** 클라이언트가 응답이 없을 떄를 대비하여 일정 시간 대기한다. */

@@ -47,14 +47,36 @@ public class ReceiveDataToServer extends HttpServlet {
 	
 	/** 서버에서 소켓이 열릴 때 까지 응답 대기 */
 	public void sendRespond(Transfer receiver, PrintWriter out) {
-		//Timer timer = new Timer(5); // 5초 타이머
+		Timer timer = new Timer(5); // 5초 타이머
 		
 		while (!receiver.isReady()) {
-//			if (!timer.isAlive()) {
-//				out.println(LinKlipboard.ERROR_SOCKET_CONNECTION); // 오류: 소켓 통신 오류
-//				return;
-//			}
+			if (!timer.isAlive()) {
+				out.println(LinKlipboard.ERROR_SOCKET_CONNECTION); // 오류: 소켓 통신 오류
+				return;
+			}
 		}
 		out.println(LinKlipboard.READY_TO_TRANSFER); // 데이터 전송 준비 ㅠ
+	}
+	
+	/** 클라이언트가 응답이 없을 떄를 대비하여 일정 시간 대기한다. */
+	class Timer extends Thread {
+		private int time;
+
+		public Timer(int time) {
+			this.time = time;
+			this.start();
+		}
+
+		@Override
+		public void run() {
+			for (int i = 0; i < time; i++) {
+				try {
+					sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			return;
+		}
 	}
 }

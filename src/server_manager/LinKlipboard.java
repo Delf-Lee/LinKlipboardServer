@@ -18,6 +18,7 @@ public class LinKlipboard {
 	public final static int ERROR_FULL_CLIENT = 406; //접속 가능 클라이언트 초과
 	public final static int ERROR_TRYCATCH = 407;
 	public final static int ERROR_DUPLICATED_IP = 408;
+	public final static int ERROR_NOT_SUPPORTED = 409;
 
 	public final static int STRING_TYPE = 10;
 	public final static int IMAGE_TYPE = 11;

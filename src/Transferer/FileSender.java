@@ -52,6 +52,7 @@ public class FileSender extends Transfer {
 
 	@Override
 	public void run() {
+		setConnection();
 		FileContents sendContents = (FileContents) group.getLastContents(); // 그룹의 최신데이터를 가져온다.
 		String sendFilePath = sendContents.getFilePath(); // 파일이 저장되어 있는 경로를 가져온다. 
 
