@@ -41,7 +41,7 @@ public class SendDataToServer extends HttpServlet {
 		LinKlipboardGroup targetGroup = LinKlipboardServer.getGroup(groupName); // 그룹 객체 가져옴
 		ClientHandler client = targetGroup.searchClient(ipAddr); // 그룹에서 클라이언트 특정
 
-		PrintWriter out = response.getWriter();
+		PrintWriter out = response.getWriter(); // 스트림 가져옴
 
 		Transfer receiver; // 데이터를 받을 스레드
 

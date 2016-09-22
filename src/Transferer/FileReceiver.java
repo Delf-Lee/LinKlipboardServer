@@ -94,7 +94,7 @@ public class FileReceiver extends Transfer {
 		}
 		Contents receiveContents = new FileContents(receiveFile); // FileContents 생성
 		group.setLastContents(receiveContents); // 그룹 공유 데이터 갱신
-		group.sendNotification(client); // 그룹원들 모두에게 알림 송신
+		group.notificateUpdate(client); // 그룹원들 모두에게 알림 송신
 	}
 
 	/** 파일이름 중복이라면 숫자를 덧붙인다. 

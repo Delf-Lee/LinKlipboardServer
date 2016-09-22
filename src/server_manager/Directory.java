@@ -3,7 +3,7 @@ package server_manager;
 import java.io.File;
 
 public class Directory {
-	public static File createEmptyDirectory(String dir) {
+	public synchronized static File createEmptyDirectory(String dir) {
 		File directory = new File(dir);
 
 		if (!directory.exists()) {
@@ -15,7 +15,7 @@ public class Directory {
 		return directory;
 	}
 	
-	public static File createDirectory(String dir) {
+	public synchronized static File createDirectory(String dir) {
 		File directory = new File(dir);
 		if (!directory.exists()) {
 			directory.mkdir();
@@ -24,7 +24,7 @@ public class Directory {
 	}
 
 
-	public static void clearDirecrory(File dir) {
+	public synchronized static void clearDirecrory(File dir) {
 		File[] innerFile = dir.listFiles();
 		for (File file : innerFile) {
 			if (file.isDirectory()) {

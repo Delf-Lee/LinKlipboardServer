@@ -13,6 +13,7 @@ public class ClientHandler {
 	protected int localPort; // 서버의 포트 번호
 	protected Socket socket; // 클라이언트와의 소켓
 
+	private int order;
 	//	protected LinKlipboardGroup myGroup;
 
 	public ClientHandler(HttpServletRequest client, String groupName) {
@@ -39,6 +40,10 @@ public class ClientHandler {
 		this.groupName = groupName;
 	}
 
+	public void setOrder(int order) {
+		this.order = order;
+	}
+
 	public String getNickname() {
 		return nickName;
 	}
@@ -55,11 +60,8 @@ public class ClientHandler {
 		return localPort;
 	}
 
-	public void sendData() {
-
+	public int getOrfer() {
+		return order;
 	}
 
-	public void recieveData() {
-
-	}
 }

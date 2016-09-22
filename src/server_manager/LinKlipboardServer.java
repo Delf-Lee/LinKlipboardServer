@@ -17,7 +17,7 @@ public class LinKlipboardServer {
 
 	/** 새로운 그룹을 생성 
 	 * @param newGroup 새로 생성할 그룹 */
-	public static void createGroup(LinKlipboardGroup newGroup) {
+	public synchronized static void createGroup(LinKlipboardGroup newGroup) {
 		if (!isFull()) {
 			groups.put(newGroup.getName(), newGroup);
 		}
@@ -34,7 +34,7 @@ public class LinKlipboardServer {
 	/** 기존 그룹에 클라이언트 입장 
 	 * @param groupName 클라이언트가 입장을 희망하는 그룹의 이름 
 	 * @param 클라이언트의 핸들러 */
-	public static void joinGroup(String groupName, ClientHandler newClient) {
+	public synchronized static void joinGroup(String groupName, ClientHandler newClient) {
 		/* 중복처리 및 보안 처리는 서블릿에서 */
 		groups.get(groupName).joinGroup(newClient);
 	}
@@ -51,7 +51,7 @@ public class LinKlipboardServer {
 	public static LinKlipboardGroup getGroup(String groupName) {
 		return groups.get(groupName);
 	}
-
+	/** @return 서버에 존재하는 그룹의 수 */
 	public static int getGroupCnt() {
 		return groups.size();
 	}
