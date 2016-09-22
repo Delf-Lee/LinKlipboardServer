@@ -66,18 +66,17 @@ public class ContentsReceiver extends Transfer {
 		Contents contents = null;
 		try {
 			contents = (Contents) in.readObject();
+			System.out.println("받은 데이터의 타입은: " + contents.getType());
 			int type = contents.getType();
 			switch (type) {
 			case LinKlipboard.STRING_TYPE:
 				contents = (StringContents) contents;
-
 				StringContents tmp = (StringContents) contents;
 				System.out.println(tmp.getString());
 				break;
 
 			case LinKlipboard.IMAGE_TYPE:
 				contents = (ImageContents) contents;
-
 				break;
 
 			case LinKlipboard.FILE_TYPE:

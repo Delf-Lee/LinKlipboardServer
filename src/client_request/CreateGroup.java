@@ -34,9 +34,6 @@ public class CreateGroup extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String groupName = request.getParameter("groupName");
 		String password = request.getParameter("password");
-		//		String[] info = request.getParameter("info").split(":");
-		//		String groupName = info[GROUP_NAME];
-		//		String password = info[PASSWORD];
 
 		String respond = null;
 		PrintWriter out = response.getWriter();
@@ -59,7 +56,9 @@ public class CreateGroup extends HttpServlet {
 				respond = Integer.toString(LinKlipboard.ERROR_DUPLICATED_GROUPNAME); // 오류: 중복된 그룹 이름
 			}
 			else {
+				System.out.println("방장 생성 전, ip체크: " + request.getRemoteAddr());
 				ClientHandler cheif = new ClientHandler(request, groupName); // 방장(이하 치프) 생성
+				System.out.println("방장 핸들러 생성, 핸들러 안의 ip체크: " + cheif.getRemoteAddr());
 				LinKlipboardGroup group = new LinKlipboardGroup(groupName, password, cheif); // 그룹 생성
 				LinKlipboardServer.createGroup(group);
 

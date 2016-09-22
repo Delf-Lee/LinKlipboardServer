@@ -37,10 +37,10 @@ public class SendDataToServer extends HttpServlet {
 		String fileName = request.getParameter("fileName");
 		System.out.println("- client trying uploading... group name; " + groupName + ", file name: " + fileName);
 		String ipAddr = request.getRemoteAddr();
-
+		System.out.println("요청한 클라이언트의 ip: " + ipAddr);
 		LinKlipboardGroup targetGroup = LinKlipboardServer.getGroup(groupName); // 그룹 객체 가져옴
 		ClientHandler client = targetGroup.searchClient(ipAddr); // 그룹에서 클라이언트 특정
-
+		System.out.println("ip를 기반으로 찾은 핸들러 내용 확인 / 핸들러 안에 ip: " + client.getRemoteAddr());
 		PrintWriter out = response.getWriter(); // 스트림 가져옴
 
 		Transfer receiver; // 데이터를 받을 스레드
