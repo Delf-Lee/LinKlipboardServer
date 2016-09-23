@@ -18,12 +18,12 @@ import server_manager.LinKlipboardServer;
 import server_manager.Logger;
 
 @WebServlet("/CreateGroup")
-public class CreateGroup extends HttpServlet {
+public class CreateGroupRequest extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final int GROUP_NAME = 0;
 	private static final int PASSWORD = 1;
 
-	public CreateGroup() {
+	public CreateGroupRequest() {
 		super();
 	}
 

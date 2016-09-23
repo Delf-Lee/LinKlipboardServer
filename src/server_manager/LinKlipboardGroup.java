@@ -4,6 +4,9 @@ import java.io.File;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Vector;
+
+import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
 
 import Transferer.ContentsSender;
 import contents.Contents;
@@ -75,10 +78,10 @@ public class LinKlipboardGroup {
 	public ClientHandler setChief() {
 		ClientHandler nextCheif = null;
 		int compareOrder = order;
-		
+
 		Set<String> c = clients.keySet();
 		Iterator<String> it = c.iterator();
-		
+
 		while (it.hasNext()) {
 			ClientHandler client = clients.get(it.next());
 			if (client.getOrfer() < compareOrder) {
@@ -148,33 +151,15 @@ public class LinKlipboardGroup {
 		return clients.containsKey(ip);
 	}
 
-	//	/** 그룹에서 공유될 파일을 저장할 폴더를 생성한다. */
-	//	private void createFileReceiveFolder() {
-	//		File fileReceiveFolder = new File(getFileDir());
-	//
-	//		if (!fileReceiveFolder.exists()) {
-	//			fileReceiveFolder.mkdir(); // 폴더 생성
-	//		}
-	//		else {
-	//			initDir(fileReceiveFolder);
-	//		}
-	//	}
-
 	/** @return 그룹에서 공유한 파일들이 저장되어 있는 폴더의 경로 문자열*/
 	public String getFileDir() {
 		return (fileSaveDir + "\\" + groupName);
 	}
 
-	//	/** 그룹에서 공유한 파일들이 저장되어 있는 폴더 초기화(폴더 내 파일 모두 삭제) */
-	//	private void initDir(File d) {
-	//		File dir = new File(fileSaveDir);
-	//		File[] innerFile = dir.listFiles(); // 폴더 내 존재하는 파일을 innerFile에 넣음
-	//		for (File file : innerFile) { // innerFile의 크기만큼 for문을 돌면서
-	//			file.delete(); // 파일 삭제
-	//		}
-	//		// Dir안에 파일이 하나만 있는 경우에 사용 가능
-	//		// innerFile[0].delete();  
-	//	}
+	/** @return 히스토리 내에 컨턴츠의 Vector */
+	public Vector<Contents> getHistory() {
+		return history.getContentsVector();
+	}
 
 	/** 알림 송신 스레드를 생성 */
 	public synchronized void notificateUpdate(ClientHandler sender) {
@@ -204,10 +189,15 @@ public class LinKlipboardGroup {
 		public void run() {
 			/** 송신자를 제외한 그룹 내의 모든 클라이언트에게 그룹의 최신 Contents 객체를 전송
 			 * @param sender 서버에 데이터를 전송한 클라이언트 */
-			Hashtable<String, ClientHandler> addressee = clients; // 현재 그룹원 정보 복사
-			clients.remove(sender.getRemoteAddr()); // 송신인은 제외대상
+			//Hashtable<String, ClientHandler> addressee = clients; // 현재 그룹원 정보 복사
+			Hashtable<String, ClientHandler> addressee = null;
+			
+			synchronized(clients) {
+				addressee = new Hashtable<String, ClientHandler>(clients); // 현재 그룹원 정보 복사
+			}
+			addressee.remove(sender.getRemoteAddr()); // 송신인은 제외대상
 
-			Set<String> ipAddrs = clients.keySet(); // key(ip주소)만 추출
+			Set<String> ipAddrs = addressee.keySet(); // key(ip주소)만 추출
 			Iterator<String> it = ipAddrs.iterator();
 			while (it.hasNext()) { // 송신 스레드 생성
 				new ContentsSender(group, it.next());

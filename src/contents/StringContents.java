@@ -28,10 +28,4 @@ public class StringContents extends Contents implements Serializable {
 	public String getString() {
 		return stringData;
 	}
-	
-	@Override
-	public Contents receiveData(ObjectInputStream in) throws ClassNotFoundException, IOException {
-		stringData = (String) in.readObject();
-		return this;
-	}
 }

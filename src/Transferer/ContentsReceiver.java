@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 
+import com.sun.jndi.cosnaming.CNCtx;
+
 import contents.Contents;
 import contents.ImageContents;
 import contents.StringContents;
@@ -57,6 +59,8 @@ public class ContentsReceiver extends Transfer {
 	public void run() {
 		setConnection(); // 연결 설정
 		Contents contents = receiveData(); // 데이터 받기
+		contents.setDate();
+		contents.setSharer(client.getNickname());
 		group.setLastContents(contents); // 해당 그룹에 데이터 저장
 		closeSocket(); // 소켓 닫기
 	}

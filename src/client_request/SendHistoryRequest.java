@@ -20,10 +20,10 @@ import server_manager.LinKlipboardGroup;
 import server_manager.LinKlipboardServer;
 
 @WebServlet("/ReceiveDataToServer")
-public class ReceiveDataToServer extends HttpServlet {
+public class SendHistoryRequest extends HttpServlet {
 	//private static final long serialVersionUID = 1L;
 
-	public ReceiveDataToServer() {
+	public SendHistoryRequest() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

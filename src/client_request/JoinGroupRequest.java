@@ -16,10 +16,10 @@ import server_manager.LinKlipboardServer;
 import server_manager.Logger;
 
 @WebServlet("/JoinGroup")
-public class JoinGroup extends HttpServlet {
+public class JoinGroupRequest extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	public JoinGroup() {
+	public JoinGroupRequest() {
 		super();
 	}
 

@@ -30,12 +30,6 @@ public class FileContents extends Contents implements Serializable {
 		type = LinKlipboard.FILE_TYPE;
 	}
 
-	@Override
-	public Contents receiveData(ObjectInputStream in) throws ClassNotFoundException, IOException {
-		return null;
-	}
-	
-
 	/** 보낼 파일의 이름을 반환 */
 	public String getFileName() {
 		return this.fileName;

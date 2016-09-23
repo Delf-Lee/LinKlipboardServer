@@ -26,6 +26,9 @@ public class LinKlipboard {
 	public final static String SEPARATOR = ";";
 	public final static String FILE_DIR = "C:\\LinKlipboardServer"; 
 	
+	public final static int HISTORY_DEFAULT = 10;
+	public final static int HISTORY_MAX = 50;
+	
 	public final static int FTP_PORT = 20;
 	
 	

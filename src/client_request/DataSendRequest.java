@@ -19,10 +19,10 @@ import server_manager.LinKlipboardServer;
 
 /** 클라이언트가 서버에게 데이터를 보낼 때, 이 서블릿이 호출되어 실행된다. */
 @WebServlet("/SendDataToServer")
-public class SendDataToServer extends HttpServlet {
+public class DataSendRequest extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	public SendDataToServer() {
+	public DataSendRequest() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

@@ -93,6 +93,7 @@ public class FileReceiver extends Transfer {
 			return;
 		}
 		Contents receiveContents = new FileContents(receiveFile); // FileContents 생성
+		receiveContents.setSharer(client.getNickname());
 		group.setLastContents(receiveContents); // 그룹 공유 데이터 갱신
 		group.notificateUpdate(client); // 그룹원들 모두에게 알림 송신
 	}

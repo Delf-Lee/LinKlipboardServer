@@ -40,10 +40,4 @@ public class ImageContents extends Contents implements Serializable {
 	public ImageIcon getImage() {
 		return imageData;
 	}
-
-	@Override
-	public Contents receiveData(ObjectInputStream in) throws ClassNotFoundException, IOException {
-		imageData = (ImageIcon) in.readObject();
-		return this;
-	}
 }
