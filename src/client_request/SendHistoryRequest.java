@@ -63,7 +63,7 @@ public class SendHistoryRequest extends HttpServlet {
 			}
 		}
 		System.out.println(LinKlipboard.READY_TO_TRANSFER + LinKlipboard.SEPARATOR + fileName);
-		out.println(LinKlipboard.READY_TO_TRANSFER + LinKlipboard.SEPARATOR + fileName); // 데이터 전송 준비 ㅠ
+		out.println(LinKlipboard.READY_TO_TRANSFER + LinKlipboard.SEPARATOR + fileName); // 데이터 전송 준비
 	}
 
 	/** 클라이언트가 응답이 없을 떄를 대비하여 일정 시간 대기한다. */

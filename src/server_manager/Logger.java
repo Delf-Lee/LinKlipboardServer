@@ -10,21 +10,39 @@ public class Logger {
 	public final static int SEND = 50;
 	public final static int RECEIVE = 51;
 
-	public final static int CREATE_GROUP = 60;
-	public final static int DESTROYD_GROUP = 61;
-	public final static int JOIN_CLIENT = 62;
-	public final static int EXIT_CLIENT = 63;
+	public final static int TRY_ACCESS = 60;
+	public final static int CREATE_GROUP = 61;
+	public final static int DESTROYD_GROUP = 62;
+	public final static int JOIN_CLIENT = 63;
+	public final static int EXIT_CLIENT = 64;
 
-	public static void accessClient() {
-		/* 접속 기록과 거부 사유 */
+	public static void accessClient(ClientHandler client, int result) {
+		String ipAddr = client.getRemoteAddr();
+		int port = client.getRemotePort();
+		Calendar now = Calendar.getInstance();
+
+		String prtMsg = basicInfo(client);
+//		switch (result) {
+//		case LinKlipboard.:
+//			
+//			break;
+//
+//		default:
+//			break;
+//		}
+		prtMsg += " try access.";
+		
+		System.out.println(prtMsg);
+		addLogFile(prtMsg);
 	}
+	
 
 	public static void logCreateGroup(ClientHandler client) {
 		String ipAddr = client.getRemoteAddr();
 		int port = client.getRemotePort();
 		Calendar now = Calendar.getInstance();
 
-		String prtMsg = "[" + now() + "] "; // 시간
+		String prtMsg = basicInfo(client); // 시간
 		prtMsg += ipAddr + ":" + port; // ip && port
 		prtMsg += " create the group "; // 행위
 		prtMsg += "(Group name: " + client.getGroupName(); // 그룹 이름 
@@ -77,5 +95,10 @@ public class Logger {
 		String sec = Integer.toString(cal.get(Calendar.SECOND));
 
 		return year + "." + month + "." + date + "/" + hour + ":" + minute + ":" + sec;
+	}
+
+	private static String basicInfo(ClientHandler client) {
+		String info = "[" + now() + "] " + client.getRemoteAddr() + ":" + client.getRemotePort();
+		return info;
 	}
 }

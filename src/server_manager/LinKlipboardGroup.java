@@ -165,6 +165,10 @@ public class LinKlipboardGroup {
 	public synchronized void notificateUpdate(ClientHandler sender) {
 		new Notification(this, sender);
 	}
+	
+	public int getNextSerialNo() {
+		return history.getNextSerialNo();
+	}
 
 	/** 그룹원이 0가 되면 객체을 파괴 */
 	public void destroyGroup() {
@@ -204,5 +208,4 @@ public class LinKlipboardGroup {
 			}
 		}
 	}
-
 }

@@ -16,6 +16,7 @@ import server_manager.ClientHandler;
 import server_manager.LinKlipboard;
 import server_manager.LinKlipboardGroup;
 import server_manager.LinKlipboardServer;
+import sun.awt.RepaintArea;
 
 /** 클라이언트가 서버에게 데이터를 보낼 때, 이 서블릿이 호출되어 실행된다. */
 @WebServlet("/SendDataToServer")
@@ -46,20 +47,20 @@ public class ReceiveDataRequest extends HttpServlet {
 		Transfer receiver; // 데이터를 받을 스레드
 
 		if (fileName != null) { // 받을 데이터가 파일인 경우
-			if(!fileName.contains(".")) {
+			if (!fileName.contains(".")) {
 				out.println(LinKlipboard.ERROR_NOT_SUPPORTED);
 			}
 			receiver = new FileReceiver(targetGroup, client, fileName);
-			sendRespond(receiver, out);
+			sendRespond(receiver, out, -1);
 		}
 		else { // 받을 데이터가 컨텐츠인 경우
 			receiver = new ContentsReceiver(targetGroup, client);
-			sendRespond(receiver, out); // 응답 대기
+			sendRespond(receiver, out, targetGroup.getNextSerialNo()); // 응답 대기
 		}
 	}
 
 	/** 서버에서 소켓이 열릴 때 까지 응답 대기 */
-	private void sendRespond(Transfer receiver, PrintWriter out) {
+	private void sendRespond(Transfer receiver, PrintWriter out, int serialNo) {
 		Timer timer = new Timer(5); // 5초 타이머
 
 		while (!receiver.isReady()) {
@@ -68,7 +69,9 @@ public class ReceiveDataRequest extends HttpServlet {
 				return;
 			}
 		}
-		out.println(LinKlipboard.READY_TO_TRANSFER);
+		String response = LinKlipboard.READY_TO_TRANSFER + LinKlipboard.SEPARATOR; // 오류코드
+		response += "SerialNo" + LinKlipboard.SEPARATOR + serialNo; // 시리얼 넘버
+		out.println(response);
 	}
 
 	/** 클라이언트가 응답이 없을 떄를 대비하여 일정 시간 대기한다. */

@@ -54,7 +54,7 @@ public class HisrotySender extends Transfer {
 			Vector<Contents> sendData = group.getHistory(); // 현재 그룹의 히스토리 컨텐츠 추출
 			Vector<Contents> copySendData;
 			synchronized (sendData) {
-				copySendData = new Vector<Contents>(sendData); // 복사 
+				copySendData = new Vector<Contents>(sendData); // 복사
 			}
 			out.writeObject(copySendData);
 			out.flush();

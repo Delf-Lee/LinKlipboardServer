@@ -1,8 +1,6 @@
 package contents;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import server_manager.LinKlipboard;
@@ -37,6 +35,10 @@ public class FileContents extends Contents implements Serializable {
 	/** 보낼 파일의 크기를 반환 */
 	public long getFileSize() {
 		return this.fileSize;
+	}
+	
+	public void initFilePath() {
+		this.filePath = null;
 	}
 	
 }
