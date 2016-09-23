@@ -34,9 +34,6 @@ public class CreateGroupRequest extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String groupName = request.getParameter("groupName");
 		String password = request.getParameter("password");
-		//		String[] info = request.getParameter("info").split(":");
-		//		String groupName = info[GROUP_NAME];
-		//		String password = info[PASSWORD];
 
 		String respond = null;
 		PrintWriter out = response.getWriter();
