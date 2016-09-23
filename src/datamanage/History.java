@@ -52,7 +52,8 @@ public class History {
 	}
 
 	public int getNextSerialNo() {
-		return (serialNo + 1);
+		return (serialNo);
+		//return (serialNo + 1);
 	}
 
 	public Contents getContents(int serial) {

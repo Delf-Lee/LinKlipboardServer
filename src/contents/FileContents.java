@@ -6,6 +6,10 @@ import java.io.Serializable;
 import server_manager.LinKlipboard;
 
 public class FileContents extends Contents implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1559329719938703224L;
 	private String fileName;
 	private String filePath;
 	private long fileSize;

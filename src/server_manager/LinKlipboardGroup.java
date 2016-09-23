@@ -6,8 +6,6 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
-
 import Transferer.ContentsSender;
 import contents.Contents;
 import datamanage.History;
@@ -21,7 +19,7 @@ public class LinKlipboardGroup {
 	private ClientHandler chief; // 방장
 	private Hashtable<String, ClientHandler> clients;
 	//private Vector<ClientHandler> clients;
-	private History history; // 이 그룹의 히스토리
+	private History history = new History(); // 이 그룹의 히스토리
 	private Contents lastContents; // 최근 컨텐츠
 
 	public static final String DEFAULT_CHIEF_NAME = "Chief";
@@ -51,26 +49,29 @@ public class LinKlipboardGroup {
 	 * @return 그룹원의 수가 MAX_CLIENT미만일 경우 true 그렇지 않으면 false. */
 	public synchronized void joinGroup(ClientHandler newClient) {
 		// 클라이언트를 추가
-		setDefaultNickname(newClient);
 		newClient.setOrder(order++);
 		clients.put(newClient.getRemoteAddr(), newClient);
 	}
 
-	/** 그룹 내에서 각 클라이언트에게 중복되지 않은 기본 닉네임을 부여한다. 
-	 * @param newClient  설정할 클라이언트의 핸들러 */
-	public void setDefaultNickname(ClientHandler newClient) {
+	public String createDefaultNickname() {
 		for (int i = 0;; i++) {
 			if (!clients.containsKey(DEFAULT_CREW_NAME + i + 1)) {
-				newClient.setNickname(DEFAULT_CREW_NAME + i + 1);
-				return;
+				return (DEFAULT_CREW_NAME + i + 1);
 			}
 		}
 	}
 
 	/** 사용자가 새로 설정한 닉네임이 그룹 내에서 중복인지 확인한다. 
 	 * @return 사용 가능한 닉네임이면 true 그렇지 않으면 false */
-	public boolean checkNickname(String nickname) {
-		return !(clients.containsKey(nickname));
+	public boolean isNicknameUsable(String nickname) {
+		Set<String> ips =  clients.keySet();
+		Iterator<String> it = ips.iterator();
+		while(it.hasNext()) {
+			if(it.next().equals(nickname)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/** 현재 그룹장의 연결이 끊어지면, 다음 그룹장을 정한다.
@@ -125,7 +126,7 @@ public class LinKlipboardGroup {
 	/** 그룹의 히스토리에 Contents를 추가한다. 
 	 * @param contents 히스토리에 새로 추가할 Contents 객체 */
 	private void setHistory(Contents contents) {
-
+		history.addContents(contents);
 	}
 
 	/** @return 그룹의 최신 Contents 객체 */
@@ -168,6 +169,10 @@ public class LinKlipboardGroup {
 	
 	public int getNextSerialNo() {
 		return history.getNextSerialNo();
+	}
+	
+	public Contents getHistoryContents(int serialNo) {
+		return history.getContents(serialNo);
 	}
 
 	/** 그룹원이 0가 되면 객체을 파괴 */

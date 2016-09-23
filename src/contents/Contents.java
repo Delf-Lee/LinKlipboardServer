@@ -6,7 +6,7 @@ import server_manager.Logger;
 
 // Å×½ºÆ®
 public abstract class Contents implements Serializable{
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 4131370422438049456L;
 	protected String date;
 	protected String sharer;
 	protected int type;

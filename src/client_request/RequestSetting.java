@@ -10,14 +10,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import server_manager.ClientHandler;
+import server_manager.LinKlipboard;
 import server_manager.LinKlipboardGroup;
 import server_manager.LinKlipboardServer;
 
-@WebServlet("/SettingRequest")
-public class SettingRequest extends HttpServlet {
+@WebServlet("/ChangeSettingOfClient")
+public class RequestSetting extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	public SettingRequest() {
+	public RequestSetting() {
 		super();
 	}
 
@@ -29,24 +30,21 @@ public class SettingRequest extends HttpServlet {
 		String ipAddr = request.getRemoteAddr(); // ip 주소 추출
 		
 		String groupName = request.getParameter("groupName"); // 그룹 이름 추출
-		String setting = request.getParameter("setting"); // 설정 종류 추출
+		String nickname = request.getParameter("nickname"); // 설정 종류 추출
 
 		LinKlipboardGroup targetGroup = LinKlipboardServer.getGroup(groupName); // 그룹 객체 가져옴
 		ClientHandler client = targetGroup.searchClient(ipAddr); // 그룹에서 클라이언트 특정
 		
-		String respond = null;
-		PrintWriter out = response.getWriter();
-		
-		switch (setting) {
-		case "nickname":
-			String nickname = request.getParameter("nickname");
-			client.setNickname(nickname);
-			// 이미 히스토리에 박혀있는 닉네임은 어떡해?
-			break;
-
-		default:
-			break;
+		int respond = LinKlipboard.COMPLETE_APPLY;
+		// 닉네임 중복 확인
+		if (targetGroup.isNicknameUsable(nickname)) {
+			client.setNickname(nickname); // 닉네임 변경
 		}
+		else {
+			respond = LinKlipboard.ERROR_DUPLICATED_NICKNAME;
+		}
+		
+		PrintWriter out = response.getWriter();
+		out.println(respond);
 	}
-
 }

@@ -18,10 +18,10 @@ import server_manager.LinKlipboardServer;
 import server_manager.Logger;
 
 @WebServlet("/JoinGroup")
-public class JoinGroupRequest extends HttpServlet {
+public class RequestJoinGroup extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	public JoinGroupRequest() {
+	public RequestJoinGroup() {
 		super();
 	}
 
@@ -31,9 +31,8 @@ public class JoinGroupRequest extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// 정보 받음
-		String[] info = request.getParameter("info").split(":");
-		String groupName = info[0];
-		String password = info[1];
+		String groupName = request.getParameter("groupName");
+		String password = request.getParameter("password");
 
 		String respondMsg = null;
 		PrintWriter out = response.getWriter();
@@ -57,25 +56,29 @@ public class JoinGroupRequest extends HttpServlet {
 					ClientHandler newClient = new ClientHandler(request, groupName); // 클라이언트 생성
 					group.joinGroup(newClient); // 그룹에 추가
 
-					Transfer sender = new HisrotySender(group, newClient);
-					respondMsg = sendRespond(sender);
-					Logger.logJoinClient(newClient);
+					Transfer sender = new HisrotySender(group, newClient); // 전체 히스토리 데이터 전송 스레드 생성  
+					respondMsg = sendRespond(sender, newClient); // 스레드 내에서 소켓이 열릴 때 까지 응답 대기
+					Logger.logJoinClient(newClient); // 로깅
 				}
 			}
 		}
-		out.println(respondMsg);
+		out.println(respondMsg); // 응답
 	}
 
 	/** 서버에서 소켓이 열릴 때 까지 응답 대기 */
-	private String sendRespond(Transfer sender) {
+	private String sendRespond(Transfer sender, ClientHandler client) {
 		Timer timer = new Timer(5); // 5초 타이머
 		while (!sender.isReady()) {
 			if (!timer.isAlive()) {
+				// 응답 = 오류 코드
 				return Integer.toString(LinKlipboard.ERROR_SOCKET_CONNECTION);
 			}
 		}
+		
+		// 응답 = 허가코드 + 닉네임 + 포트번호
 		String response = LinKlipboard.READY_TO_TRANSFER + LinKlipboard.SEPARATOR; // 허가 코드
-		response += "nickname" + LinKlipboard.SEPARATOR + LinKlipboardGroup.DEFAULT_CREW_NAME; // 닉네임
+		response += "nickname" + LinKlipboard.SEPARATOR  + LinKlipboard.SEPARATOR; // 닉네임
+		response += "portNum" + LinKlipboard.SEPARATOR + client.getRemotePort(); // 포트번호
 		
 		return response;
 	}

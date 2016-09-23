@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 
 import contents.Contents;
+import contents.FileContents;
 import contents.ImageContents;
 import contents.StringContents;
 import server_manager.ClientHandler;
@@ -60,6 +61,8 @@ public class ContentsReceiver extends Transfer {
 		contents.setDate();
 		contents.setSharer(client.getNickname());
 		group.setLastContents(contents); // 해당 그룹에 데이터 저장
+		group.notificateUpdate(client); // 그룹원들 모두에게 알림 송신
+		
 		closeSocket(); // 소켓 닫기
 	}
 

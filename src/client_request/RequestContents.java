@@ -11,19 +11,21 @@ import javax.servlet.http.HttpServletResponse;
 
 import Transferer.ContentsSender;
 import Transferer.FileSender;
+import Transferer.HisrotySender;
 import Transferer.Transfer;
 import contents.Contents;
 import contents.FileContents;
+import javafx.geometry.Side;
 import server_manager.ClientHandler;
 import server_manager.LinKlipboard;
 import server_manager.LinKlipboardGroup;
 import server_manager.LinKlipboardServer;
 
 @WebServlet("/ReceiveDataToServer")
-public class SendHistoryRequest extends HttpServlet {
+public class RequestContents extends HttpServlet {
 	//private static final long serialVersionUID = 1L;
 
-	public SendHistoryRequest() {
+	public RequestContents() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -31,6 +33,7 @@ public class SendHistoryRequest extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// 데이터 수신
 		String groupName = request.getParameter("groupName");
+		String serialNo = request.getParameter("seiralNo");
 		String ipAddr = request.getRemoteAddr();
 
 		LinKlipboardGroup targetGroup = LinKlipboardServer.getGroup(groupName); // 그룹 객체 가져옴
@@ -39,14 +42,21 @@ public class SendHistoryRequest extends HttpServlet {
 		Transfer sender;
 		Contents contents = targetGroup.getLastContents();
 		String fileName = "";
-
-		if (targetGroup.getLastContents().getType() == LinKlipboard.FILE_TYPE) {
-			sender = new FileSender(targetGroup, client);
-			fileName = ((FileContents) contents).getFileName();
+		
+		if(serialNo == null) { // 최신 데이터 요청
+			if (targetGroup.getLastContents().getType() == LinKlipboard.FILE_TYPE) {
+				sender = new FileSender(targetGroup, client);
+				fileName = ((FileContents) contents).getFileName();
+			}
+			else {
+				sender = new ContentsSender(targetGroup, client);
+			}
 		}
-		else {
-			sender = new ContentsSender(targetGroup, client);
+		else { // 히스토리 요청
+			sender = new HisrotySender(targetGroup, client, serialNo);
 		}
+		
+		
 
 		PrintWriter out = response.getWriter();
 		sendRespond(sender, out, fileName); // 응답 대기
