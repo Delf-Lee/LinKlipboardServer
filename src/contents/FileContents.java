@@ -25,11 +25,6 @@ public class FileContents extends Contents implements Serializable {
 		filePath = file.getPath();
 	}
 	
-	public FileContents(String sharer, String path) {
-		super(sharer);
-		type = LinKlipboard.FILE_TYPE;
-	}
-
 	/** 보낼 파일의 이름을 반환 */
 	public String getFileName() {
 		return this.fileName;

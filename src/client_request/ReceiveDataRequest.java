@@ -45,14 +45,14 @@ public class ReceiveDataRequest extends HttpServlet {
 
 		Transfer receiver; // 데이터를 받을 스레드
 
-		if (fileName != null) { // 받을 파일이 파일인 경우
+		if (fileName != null) { // 받을 데이터가 파일인 경우
 			if(!fileName.contains(".")) {
 				out.println(LinKlipboard.ERROR_NOT_SUPPORTED);
 			}
 			receiver = new FileReceiver(targetGroup, client, fileName);
 			sendRespond(receiver, out);
 		}
-		else { // 받을 파일이 컨텐츠인 경우
+		else { // 받을 데이터가 컨텐츠인 경우
 			receiver = new ContentsReceiver(targetGroup, client);
 			sendRespond(receiver, out); // 응답 대기
 		}

@@ -14,13 +14,13 @@ public class StringContents extends Contents implements Serializable {
 	}
 
 	public StringContents(String data) {
-		super();
+		this();
 		stringData = data;
 		type = LinKlipboard.STRING_TYPE;
 	}
 
 	public StringContents(String sharer, String data) {
-		super(sharer);
+		this(sharer);
 		type = LinKlipboard.STRING_TYPE;
 		this.stringData = data;
 	}

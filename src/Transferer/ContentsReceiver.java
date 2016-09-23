@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 
-import com.sun.jndi.cosnaming.CNCtx;
-
 import contents.Contents;
 import contents.ImageContents;
 import contents.StringContents;
