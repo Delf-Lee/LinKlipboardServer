@@ -44,6 +44,7 @@ public class FileSender extends Transfer {
 			dos.close();
 			fis.close();
 			socket.close();
+			listener.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
