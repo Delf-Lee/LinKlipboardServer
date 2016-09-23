@@ -1,12 +1,11 @@
 package contents;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import server_manager.LinKlipboard;
 
 public class StringContents extends Contents implements Serializable {
+	private static final long serialVersionUID = 8197233165098147502L;
 	private String stringData;
 	
 	public StringContents() {
