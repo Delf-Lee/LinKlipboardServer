@@ -2,6 +2,7 @@ package server_manager;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Vector;
 
 import contents.Contents;
 
@@ -16,24 +17,26 @@ public class Logger {
 	public final static int JOIN_CLIENT = 63;
 	public final static int EXIT_CLIENT = 64;
 
-	public static void accessClient(ClientHandler client, int result) {
-		String ipAddr = client.getRemoteAddr();
-		int port = client.getRemotePort();
-		Calendar now = Calendar.getInstance();
-
+	private static Calendar now;
+	public static void accessClient(ClientHandler client) {
 		String prtMsg = basicInfo(client);
-//		switch (result) {
-//		case LinKlipboard.:
-//			
-//			break;
-//
-//		default:
-//			break;
-//		}
 		prtMsg += " try access.";
 		
 		System.out.println(prtMsg);
 		addLogFile(prtMsg);
+	}
+	
+	public static void resultAccess(ClientHandler client, int result) {
+		String ipAddr = client.getRemoteAddr();
+		String prtMsg = basicInfo(client);
+		
+		switch (result) {
+		case LinKlipboard.ACCESS_PERMIT:
+			prtMsg += " access success.";
+			break;
+		default:
+			break;
+		}
 	}
 	
 
@@ -43,7 +46,6 @@ public class Logger {
 		Calendar now = Calendar.getInstance();
 
 		String prtMsg = basicInfo(client); // 시간
-		prtMsg += ipAddr + ":" + port; // ip && port
 		prtMsg += " create the group "; // 행위
 		prtMsg += "(Group name: " + client.getGroupName(); // 그룹 이름 
 		prtMsg += ", Total group: " + LinKlipboardServer.getGroupCnt() + ")"; // 현재 총 그룹 수

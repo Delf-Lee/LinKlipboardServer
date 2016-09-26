@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 
+import com.sun.nio.sctp.Notification;
+
 import contents.Contents;
-import contents.FileContents;
 import contents.ImageContents;
 import contents.StringContents;
 import server_manager.ClientHandler;
@@ -25,7 +26,7 @@ public class ContentsReceiver extends Transfer {
 	public void setConnection() {
 		try {
 			// 소켓 접속 설정
-			listener = new ServerSocket(LinKlipboard.FTP_PORT);
+			listener = new ServerSocket(client.getRemotePort());
 			ready = true;
 			System.out.println("응답 보냄");
 			socket = listener.accept();
@@ -39,7 +40,6 @@ public class ContentsReceiver extends Transfer {
 			System.out.println("접속 오류");
 			e.printStackTrace();
 		}
-
 	}
 
 	@Override

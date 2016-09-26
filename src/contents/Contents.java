@@ -2,14 +2,15 @@ package contents;
 
 import java.io.Serializable;
 
+import server_manager.LinKlipboard;
 import server_manager.Logger;
 
 // Å×½ºÆ®
 public abstract class Contents implements Serializable{
 	private static final long serialVersionUID = 4131370422438049456L;
-	protected String date;
-	protected String sharer;
-	protected int type;
+	protected String date = "null";
+	protected String sharer = "null";
+	protected int type = LinKlipboard.NULL;
 
 	public Contents() {
 		setDate();
@@ -18,6 +19,10 @@ public abstract class Contents implements Serializable{
 	public Contents(String sharer) {
 		this();
 		this.sharer = sharer;
+	}
+	public Contents(String sharer, int type) {
+		this(sharer);
+		this.type = type;
 	}
 	
 	public void setSharer(String sharer) {

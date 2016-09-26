@@ -30,7 +30,7 @@ public class RequestJoinGroup extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// 정보 받음
+		// 정보 받음s
 		String groupName = request.getParameter("groupName");
 		String password = request.getParameter("password");
 
@@ -54,10 +54,11 @@ public class RequestJoinGroup extends HttpServlet {
 				}
 				else {
 					ClientHandler newClient = new ClientHandler(request, groupName); // 클라이언트 생성
+					group.notificateJoinClient(newClient); // 다른 클라이언트에게 접속을 알림
 					group.joinGroup(newClient); // 그룹에 추가
 
-					Transfer sender = new HisrotySender(group, newClient); // 전체 히스토리 데이터 전송 스레드 생성  
-					respondMsg = sendRespond(sender, newClient); // 스레드 내에서 소켓이 열릴 때 까지 응답 대기
+					Transfer sender = new HisrotySender(group, newClient); // 전체 히스토리 데이터 전송 스레드 생성
+					respondMsg = sendRespond(sender, newClient,group.createDefaultNickname()); // 스레드 내에서 소켓이 열릴 때 까지 응답 대기
 					Logger.logJoinClient(newClient); // 로깅
 				}
 			}
@@ -66,7 +67,7 @@ public class RequestJoinGroup extends HttpServlet {
 	}
 
 	/** 서버에서 소켓이 열릴 때 까지 응답 대기 */
-	private String sendRespond(Transfer sender, ClientHandler client) {
+	private String sendRespond(Transfer sender, ClientHandler client, String nickname) {
 		Timer timer = new Timer(5); // 5초 타이머
 		while (!sender.isReady()) {
 			if (!timer.isAlive()) {
@@ -76,8 +77,8 @@ public class RequestJoinGroup extends HttpServlet {
 		}
 		
 		// 응답 = 허가코드 + 닉네임 + 포트번호
-		String response = LinKlipboard.READY_TO_TRANSFER + LinKlipboard.SEPARATOR; // 허가 코드
-		response += "nickname" + LinKlipboard.SEPARATOR  + LinKlipboard.SEPARATOR; // 닉네임
+		String response = LinKlipboard.ACCESS_PERMIT + LinKlipboard.SEPARATOR; // 허가 코드
+		response += "nickname" + LinKlipboard.SEPARATOR  + nickname + LinKlipboard.SEPARATOR; // 닉네임
 		response += "portNum" + LinKlipboard.SEPARATOR + client.getRemotePort(); // 포트번호
 		
 		return response;

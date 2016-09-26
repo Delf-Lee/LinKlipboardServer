@@ -11,6 +11,9 @@ public class StringContents extends Contents implements Serializable {
 	public StringContents() {
 		super();
 	}
+	public StringContents(String sharer, int type) {
+		super(sharer, type);
+	}
 
 	public StringContents(String data) {
 		this();

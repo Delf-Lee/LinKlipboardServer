@@ -3,15 +3,14 @@ package Transferer;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
+import java.util.Iterator;
 import java.util.Vector;
 
-import com.sun.org.apache.xerces.internal.xni.grammars.Grammar;
-
 import contents.Contents;
+import datamanage.ClientInitData;
 import server_manager.ClientHandler;
 import server_manager.LinKlipboard;
 import server_manager.LinKlipboardGroup;
-import sun.print.resources.serviceui;
 
 public class HisrotySender extends Transfer {
 	// 스트림
@@ -34,7 +33,7 @@ public class HisrotySender extends Transfer {
 	public void setConnection() {
 		try {
 			// 소켓 접속 설정
-			listener = new ServerSocket(LinKlipboard.FTP_PORT);
+			listener = new ServerSocket(client.getRemotePort());
 			ready = true;
 			socket = listener.accept();
 
@@ -59,20 +58,20 @@ public class HisrotySender extends Transfer {
 	@Override
 	public void run() {
 		setConnection();
+		System.out.println("히스토리 전송을 위한 소켓연결 완료");
 		if (serialNo == LinKlipboard.NULL) {
+			System.out.println("전체 히스토리 전송");
 			try {
-				Vector<Contents> sendData = group.getHistory(); // 현재 그룹의 히스토리 컨텐츠 추출
-				Vector<Contents> copySendData;
-				synchronized (sendData) {
-					copySendData = new Vector<Contents>(sendData); // 복사
-				}
-				out.writeObject(copySendData);
+				ClientInitData sendInitData = new ClientInitData(group); // 복사할 Contents Vector
+				out.writeObject(sendInitData);
 				out.flush();
+				System.out.println("전송 완료"); // debug
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		} else {
-			Contents cotents= group.getHistoryContents(serialNo);
+		}
+		else {
+			Contents cotents = group.getHistoryContents(serialNo);
 			try {
 				out.writeObject(cotents);
 				out.flush();

@@ -2,6 +2,7 @@ package client_request;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,9 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import Transferer.HisrotySender;
-import Transferer.Transfer;
-import client_request.RequestJoinGroup.Timer;
 import server_manager.ClientHandler;
 import server_manager.LinKlipboard;
 import server_manager.LinKlipboardGroup;
@@ -21,8 +19,6 @@ import server_manager.Logger;
 @WebServlet("/CreateGroup")
 public class RequestCreateGroup extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final int GROUP_NAME = 0;
-	private static final int PASSWORD = 1;
 
 	public RequestCreateGroup() {
 		super();
@@ -32,8 +28,9 @@ public class RequestCreateGroup extends HttpServlet {
 		ClientHandler cheif = new ClientHandler(request, "");
 		Logger.logCreateGroup(cheif);
 	}
-
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 		String groupName = request.getParameter("groupName");
 		String password = request.getParameter("password");
 
@@ -64,15 +61,18 @@ public class RequestCreateGroup extends HttpServlet {
 
 				// 응답 = 허가코드 + 닉네임 + 포트번호
 				respondMsg = LinKlipboard.ACCESS_PERMIT + LinKlipboard.SEPARATOR; // 허가 코드
-				respondMsg += "nickname" + LinKlipboard.SEPARATOR + group.createDefaultNickname() + LinKlipboard.SEPARATOR; // 닉네임
+				respondMsg += "nickname" + LinKlipboard.SEPARATOR + LinKlipboardGroup.DEFAULT_CHIEF_NAME + LinKlipboard.SEPARATOR; // 닉네임
 				respondMsg += "portNum" + LinKlipboard.SEPARATOR + cheif.getRemotePort(); // 포트번호
+				
+				respondMsg = new String(respondMsg.getBytes("utf-8"), "utf-8");
+				System.out.println(Charset.defaultCharset());
+				//System.out.println("utf-8 -> euc-kr        : " + new String(word.getBytes("utf-8"), "euc-kr"));
+				//respondMsg = convert(respondMsg);
 				
 				Logger.logCreateGroup(cheif); // 로깅
 			}
 		}
-
 		// 전송
 		out.println(respondMsg);
 	}
 }
-	

@@ -31,6 +31,8 @@ public class LinKlipboard {
 	public final static int HISTORY_DEFAULT = 10;
 	public final static int HISTORY_MAX = 50;
 
-	public final static int FTP_PORT = 20;
+	public static final int UPDATE_DATA = 0;
+	public static final int EXIT_CLITNT = 1;
+	public static final int JOIN_CLITNT = 2;
 
 }

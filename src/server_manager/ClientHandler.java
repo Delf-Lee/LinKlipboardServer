@@ -30,6 +30,7 @@ public class ClientHandler {
 	public void setNickname(String nickname) {
 		this.nickName = nickname;
 	}
+	
 
 	/** @return 클라이언트가 속한 그룹 이름*/
 	public String getGroupName() {
@@ -60,7 +61,7 @@ public class ClientHandler {
 		return localPort;
 	}
 
-	public int getOrfer() {
+	public int getOrder() {
 		return order;
 	}
 

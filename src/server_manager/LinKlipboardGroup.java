@@ -8,6 +8,7 @@ import java.util.Vector;
 
 import Transferer.ContentsSender;
 import contents.Contents;
+import contents.StringContents;
 import datamanage.History;
 
 public class LinKlipboardGroup {
@@ -64,10 +65,10 @@ public class LinKlipboardGroup {
 	/** 사용자가 새로 설정한 닉네임이 그룹 내에서 중복인지 확인한다. 
 	 * @return 사용 가능한 닉네임이면 true 그렇지 않으면 false */
 	public boolean isNicknameUsable(String nickname) {
-		Set<String> ips =  clients.keySet();
+		Set<String> ips = clients.keySet();
 		Iterator<String> it = ips.iterator();
-		while(it.hasNext()) {
-			if(it.next().equals(nickname)) {
+		while (it.hasNext()) {
+			if (it.next().equals(nickname)) {
 				return false;
 			}
 		}
@@ -85,8 +86,8 @@ public class LinKlipboardGroup {
 
 		while (it.hasNext()) {
 			ClientHandler client = clients.get(it.next());
-			if (client.getOrfer() < compareOrder) {
-				compareOrder = client.getOrfer();
+			if (client.getOrder() < compareOrder) {
+				compareOrder = client.getOrder();
 				nextCheif = client;
 			}
 		}
@@ -126,6 +127,7 @@ public class LinKlipboardGroup {
 	/** 그룹의 히스토리에 Contents를 추가한다. 
 	 * @param contents 히스토리에 새로 추가할 Contents 객체 */
 	private void setHistory(Contents contents) {
+		System.out.println("히스토리 세팅");
 		history.addContents(contents);
 	}
 
@@ -163,14 +165,27 @@ public class LinKlipboardGroup {
 	}
 
 	/** 알림 송신 스레드를 생성 */
-	public synchronized void notificateUpdate(ClientHandler sender) {
+	public synchronized void notificateExitClients(ClientHandler sender) {
+		String exitClient = sender.getNickname();
+		Contents tmp = new StringContents("exit:" + exitClient, LinKlipboard.NULL);
+		new Notification(this, sender);
+	}
+
+	public synchronized void notificateJoinClient(ClientHandler sender) {
+		System.out.println("접속 알림 준비");
+		String joinClient = sender.getNickname();
+		Contents tmp = new StringContents("join:" + joinClient, LinKlipboard.NULL);
 		new Notification(this, sender);
 	}
 	
+	public synchronized void notificateUpdate(ClientHandler sender) {
+		new Notification(this, sender);
+	}
+
 	public int getNextSerialNo() {
 		return history.getNextSerialNo();
 	}
-	
+
 	public Contents getHistoryContents(int serialNo) {
 		return history.getContents(serialNo);
 	}
@@ -181,36 +196,104 @@ public class LinKlipboardGroup {
 		Directory.clearDirecrory(fileReceiveFolder); // 폴더 삭제
 	}
 
+	public Vector<String> getClients() {
+		Vector<String> clientsList = new Vector<String>();
+		Set<String> ips = clients.keySet();
+		Iterator<String> it = ips.iterator();
+		while (it.hasNext()) {
+			int i = 0;
+			String nextClient = clients.get(it.next()).getNickname();
+			clientsList.add(i++, nextClient);
+		}
+		return clientsList;
+	}
+
+	/** 그룹에서 클라이언트 삭제
+	 * @return 삭제된 클라이언트 핸들러 객체 */
+	public synchronized ClientHandler removeClient(String client) {
+		ClientHandler removed = clients.remove(client);
+		if (clients.isEmpty()) {
+			LinKlipboardServer.removeGroup(groupName);
+		}
+		return removed;
+	}
+
 	/** 송신자를 제외한 그룹 내의 모든 클라이언트에게 그룹의 최신 Contents 객체를 전송
 	 * @param sender 서버에 데이터를 전송한 클라이언트 */
 	class Notification extends Thread {
 
 		private LinKlipboardGroup group;
 		private ClientHandler sender;
+		private int type;
 
 		public Notification(LinKlipboardGroup group, ClientHandler sender) {
 			this.group = group;
 			this.sender = sender;
-			this.start();
+			start();
 		}
 
+		/* TODO: 동기화 문제를 해결하지 못함.
+		 * 통신이 다 끝나지 않은 채 다른 연결을 수립할 가능성이 있음 */
 		@Override
 		public void run() {
-			/** 송신자를 제외한 그룹 내의 모든 클라이언트에게 그룹의 최신 Contents 객체를 전송
-			 * @param sender 서버에 데이터를 전송한 클라이언트 */
+			switch (type) {
+			case LinKlipboard.UPDATE_DATA:
+				sendUpdateData();
+				break;
+//			case LinKlipboard.EXIT_CLITNT:
+//				notificateExitClient();
+//				break;
+//
+//			case LinKlipboard.JOIN_CLITNT:
+//				notificateJoinClient();
+//				break;
+
+			default:
+				break;
+			}
+		}
+
+		/** 송신자를 제외한 그룹 내의 모든 클라이언트에게 그룹의 최신 Contents 객체를 전송
+		 * @param sender 서버에 데이터를 전송한 클라이언트 */
+		private void sendUpdateData() {
 			//Hashtable<String, ClientHandler> addressee = clients; // 현재 그룹원 정보 복사
 			Hashtable<String, ClientHandler> addressee = null;
-			
-			synchronized(clients) {
+
+			synchronized (clients) {
 				addressee = new Hashtable<String, ClientHandler>(clients); // 현재 그룹원 정보 복사
 			}
 			addressee.remove(sender.getRemoteAddr()); // 송신인은 제외대상
 
-			Set<String> ipAddrs = addressee.keySet(); // key(ip주소)만 추출
+			Set<String> ipAddrs;
+			synchronized (clients) {
+				ipAddrs = clients.keySet(); // key(ip주소)만 추출
+			}
 			Iterator<String> it = ipAddrs.iterator();
 			while (it.hasNext()) { // 송신 스레드 생성
-				new ContentsSender(group, it.next());
+				new ContentsSender(group, clients.get(it.next()));
 			}
 		}
+
+//		private void notificateExitClient() {
+//			Set<String> ipAddrs;
+//			synchronized (clients) {
+//				ipAddrs = clients.keySet(); // key(ip주소)만 추출
+//			}
+//			Iterator<String> it = ipAddrs.iterator();
+//			while (it.hasNext()) { // 송신 스레드 생성
+//				new NotificationSender(it.next(), sender.getNickname(), NotificationSender.EXIT);
+//			}
+//		}
+//
+//		private void notificateJoinClient() {
+//			Set<String> ipAddrs;
+//			synchronized (clients) {
+//				ipAddrs = clients.keySet(); // key(ip주소)만 추출
+//			}
+//			Iterator<String> it = ipAddrs.iterator();
+//			while (it.hasNext()) { // 송신 스레드 생성
+//				new NotificationSender(it.next(), sender.getNickname(), NotificationSender.JOIN);
+//			}
+//		}
 	}
 }

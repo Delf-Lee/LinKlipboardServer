@@ -29,9 +29,10 @@ public class RequestSetting extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String ipAddr = request.getRemoteAddr(); // ip 주소 추출
 		
+		System.out.println("닉네임 변경 요청");
 		String groupName = request.getParameter("groupName"); // 그룹 이름 추출
 		String nickname = request.getParameter("nickname"); // 설정 종류 추출
-
+		System.out.println("변경될 닉네임: " + nickname);
 		LinKlipboardGroup targetGroup = LinKlipboardServer.getGroup(groupName); // 그룹 객체 가져옴
 		ClientHandler client = targetGroup.searchClient(ipAddr); // 그룹에서 클라이언트 특정
 		
@@ -39,9 +40,11 @@ public class RequestSetting extends HttpServlet {
 		// 닉네임 중복 확인
 		if (targetGroup.isNicknameUsable(nickname)) {
 			client.setNickname(nickname); // 닉네임 변경
+			System.out.println("닉네임 변경됨");
 		}
 		else {
 			respond = LinKlipboard.ERROR_DUPLICATED_NICKNAME;
+			System.out.println("중복");
 		}
 		
 		PrintWriter out = response.getWriter();

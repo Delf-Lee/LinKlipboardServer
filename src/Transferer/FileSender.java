@@ -26,7 +26,7 @@ public class FileSender extends Transfer {
 	public void setConnection() {
 		try {
 			// 家南 立加 汲沥
-			listener = new ServerSocket(LinKlipboard.FTP_PORT);
+			listener = new ServerSocket(client.getRemotePort());
 			ready = true;
 			socket = listener.accept();
 

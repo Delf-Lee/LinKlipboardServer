@@ -51,6 +51,7 @@ public class LinKlipboardServer {
 	public static LinKlipboardGroup getGroup(String groupName) {
 		return groups.get(groupName);
 	}
+
 	/** @return 서버에 존재하는 그룹의 수 */
 	public static int getGroupCnt() {
 		return groups.size();
@@ -72,5 +73,13 @@ public class LinKlipboardServer {
 			}
 		}
 		return false;
+	}
+
+	/**@param*/
+	public static LinKlipboardGroup removeGroup(String group) {
+		if (!group.isEmpty()) {
+			return groups.remove(group);
+		}
+		return null;
 	}
 }

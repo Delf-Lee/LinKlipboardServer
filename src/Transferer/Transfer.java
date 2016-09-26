@@ -16,6 +16,8 @@ abstract public class Transfer extends Thread {
 
 	protected static final int BYTE_SIZE = 65536;
 	protected boolean ready = false;
+	
+	
 
 	public Transfer(LinKlipboardGroup group, ClientHandler client) {
 		this.group = group;

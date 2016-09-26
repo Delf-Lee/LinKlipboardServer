@@ -7,7 +7,6 @@ import java.net.UnknownHostException;
 
 import contents.Contents;
 import server_manager.ClientHandler;
-import server_manager.LinKlipboard;
 import server_manager.LinKlipboardGroup;
 
 public class ContentsSender extends Transfer {
@@ -19,18 +18,13 @@ public class ContentsSender extends Transfer {
 		super(group, client);
 		this.start();
 	}
-	
-	public ContentsSender(LinKlipboardGroup group, String ip) {
-		super(group, null);
-		this.ipAddr = ip;
-		this.start();
-	}
 
 	@Override
 	public void setConnection() {
 		try {
 			// 소켓 접속 설정
-			socket = new Socket(ipAddr, LinKlipboard.FTP_PORT);
+			//System.out.println(/*client.getNickname() + */"의 소켓 연결 설정(" + client.getLocalPort() + "/" + client.getRemotePort() + ")");
+			socket = new Socket(ipAddr, client.getRemotePort());
 			// 스트림 설정
 			out = new ObjectOutputStream(socket.getOutputStream());
 

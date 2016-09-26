@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +17,6 @@ import Transferer.HisrotySender;
 import Transferer.Transfer;
 import contents.Contents;
 import contents.FileContents;
-import javafx.geometry.Side;
 import server_manager.ClientHandler;
 import server_manager.LinKlipboard;
 import server_manager.LinKlipboardGroup;
@@ -23,11 +24,16 @@ import server_manager.LinKlipboardServer;
 
 @WebServlet("/ReceiveDataToServer")
 public class RequestContents extends HttpServlet {
-	//private static final long serialVersionUID = 1L;
+	// private static final long serialVersionUID = 1L;
 
 	public RequestContents() {
 		super();
 		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/plain;charset=UTF-8");
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -42,8 +48,8 @@ public class RequestContents extends HttpServlet {
 		Transfer sender;
 		Contents contents = targetGroup.getLastContents();
 		String fileName = "";
-		
-		if(serialNo == null) { // 최신 데이터 요청
+
+		if (serialNo == null) { // 최신 데이터 요청
 			if (targetGroup.getLastContents().getType() == LinKlipboard.FILE_TYPE) {
 				sender = new FileSender(targetGroup, client);
 				fileName = ((FileContents) contents).getFileName();
@@ -53,10 +59,9 @@ public class RequestContents extends HttpServlet {
 			}
 		}
 		else { // 히스토리 요청
+			System.out.println("히스토리 샌더 생성");
 			sender = new HisrotySender(targetGroup, client, serialNo);
 		}
-		
-		
 
 		PrintWriter out = response.getWriter();
 		sendRespond(sender, out, fileName); // 응답 대기
