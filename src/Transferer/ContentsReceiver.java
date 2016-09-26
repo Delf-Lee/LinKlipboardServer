@@ -28,7 +28,7 @@ public class ContentsReceiver extends Transfer {
 			// 소켓 접속 설정
 			listener = new ServerSocket(client.getRemotePort());
 			ready = true;
-			System.out.println("응답 보냄");
+			System.out.println("응답 보냄 / 접속 대기");
 			socket = listener.accept();
 
 			System.out.println("접속했다");
@@ -58,6 +58,7 @@ public class ContentsReceiver extends Transfer {
 	public void run() {
 		setConnection(); // 연결 설정
 		Contents contents = receiveData(); // 데이터 받기
+		System.out.println(client.getNickname() + "으로부터 컨텐츠 수신");
 		contents.setDate();
 		contents.setSharer(client.getNickname());
 		group.setLastContents(contents); // 해당 그룹에 데이터 저장

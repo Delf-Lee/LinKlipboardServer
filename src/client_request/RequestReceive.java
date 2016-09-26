@@ -8,6 +8,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.plaf.synth.SynthSeparatorUI;
+
+import com.sun.prism.paint.Gradient;
 
 import Transferer.ContentsReceiver;
 import Transferer.FileReceiver;
@@ -17,7 +20,8 @@ import server_manager.LinKlipboard;
 import server_manager.LinKlipboardGroup;
 import server_manager.LinKlipboardServer;
 
-/** 클라이언트가 서버에게 데이터를 보낼 때, 이 서블릿이 호출되어 실행된다. */
+/** 클라이언트가 서버에게 데이터를 보낼 때, 이 서블릿이 호출되어 실행된다.
+ * 서버는 수신 스레드를 생성하여 클라이언트로부터 데이터를 받는다. */
 @WebServlet("/SendDataToServer")
 public class RequestReceive extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -33,63 +37,41 @@ public class RequestReceive extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// 데이터 수신
-		String groupName = request.getParameter("groupName");
-		String fileName = request.getParameter("fileName");
-		System.out.println("- client trying uploading... group name; " + groupName + ", file name: " + fileName);
+		String groupName = request.getParameter("groupName"); // 클라이언트의 그룹이름
+		String fileName = request.getParameter("fileName"); // 클라이언트가 보낼 파일명
 		String ipAddr = request.getRemoteAddr();
-		System.out.println("요청한 클라이언트의 ip: " + ipAddr);
+		
 		LinKlipboardGroup targetGroup = LinKlipboardServer.getGroup(groupName); // 그룹 객체 가져옴
 		ClientHandler client = targetGroup.searchClient(ipAddr); // 그룹에서 클라이언트 특정
-		System.out.println("ip를 기반으로 찾은 핸들러 내용 확인 / 핸들러 안에 ip: " + client.getRemoteAddr());
+		
 		PrintWriter out = response.getWriter(); // 스트림 가져옴
 
-		Transfer receiver; // 데이터를 받을 스레드
-
-		if (fileName != null) { // 받을 파일이 파일인 경우
-			if(!fileName.contains(".")) {
+		Transfer receiver; // 데이터 수신 스레드
+		int sirialNo = targetGroup.getNextSerialNo();
+		
+		// 1. 파일 요청
+		if (fileName != null) {
+			if (!fileName.contains(".")) { // 오류: 파일이 아님
 				out.println(LinKlipboard.ERROR_NOT_SUPPORTED);
 			}
-			receiver = new FileReceiver(targetGroup, client, fileName);
-			sendRespond(receiver, out);
+			receiver = new FileReceiver(targetGroup, client, fileName); // 파일 수신 스레드 생성
+			sendRespond(receiver, out, sirialNo);
 		}
-		else { // 받을 파일이 컨텐츠인 경우
-			receiver = new ContentsReceiver(targetGroup, client);
-			sendRespond(receiver, out); // 응답 대기
+		// 2. 문자열 or 이미지 요청
+		else {
+			receiver = new ContentsReceiver(targetGroup, client); // 객체 수신 스레드 생성
+			sendRespond(receiver, out, sirialNo); // 응답 대기
 		}
 	}
 
 	/** 서버에서 소켓이 열릴 때 까지 응답 대기 */
-	private void sendRespond(Transfer receiver, PrintWriter out) {
-		Timer timer = new Timer(5); // 5초 타이머
-
+	private void sendRespond(Transfer receiver, PrintWriter out, int serialNo) {
+		String sendMsg = null;
 		while (!receiver.isReady()) {
-			if (!timer.isAlive()) {
-				out.println(LinKlipboard.ERROR_SOCKET_CONNECTION); // 오류: 소켓 통신 오류
-				return;
-			}
 		}
-		out.println(LinKlipboard.READY_TO_TRANSFER);
-	}
-
-	/** 클라이언트가 응답이 없을 떄를 대비하여 일정 시간 대기한다. */
-	class Timer extends Thread {
-		private int time;
-
-		public Timer(int time) {
-			this.time = time;
-			this.start();
-		}
-
-		@Override
-		public void run() {
-			for (int i = 0; i < time; i++) {
-				try {
-					sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			return;
-		}
+		sendMsg = LinKlipboard.READY_TO_TRANSFER + LinKlipboard.SEPARATOR;
+		sendMsg += "serialNo" + LinKlipboard.SEPARATOR + serialNo;
+		System.out.println("응답보냄: " + sendMsg);
+		out.println(sendMsg);
 	}
 }

@@ -12,6 +12,7 @@ public class ClientHandler {
 	protected int remoteProt; // 클라이언트의 포트번호
 	protected int localPort; // 서버의 포트 번호
 	protected Socket socket; // 클라이언트와의 소켓
+	
 
 	private int order;
 	//	protected LinKlipboardGroup myGroup;
@@ -63,6 +64,10 @@ public class ClientHandler {
 
 	public int getOrder() {
 		return order;
+	}
+	
+	public boolean equals(ClientHandler client) {
+		return remoteAddr.equals(client.remoteAddr);
 	}
 
 }

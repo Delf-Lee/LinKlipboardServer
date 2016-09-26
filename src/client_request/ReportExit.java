@@ -1,6 +1,8 @@
 package client_request;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,7 +15,6 @@ import server_manager.LinKlipboardServer;
 
 @WebServlet("/ReportExit")
 public class ReportExit extends HttpServlet {
-	private static final long serialVersionUID = 1L;
        
     public ReportExit() {
         super();
@@ -28,11 +29,15 @@ public class ReportExit extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String groupName = request.getParameter("groupName");
 		String ipAddr = request.getRemoteAddr();
+		System.out.println(groupName + "의 " + ipAddr + "가 종료");
 		
 		LinKlipboardGroup targetGroup = LinKlipboardServer.getGroup(groupName); // 그룹 객체 가져옴
 		ClientHandler client = targetGroup.removeClient(ipAddr); // 클라이언트 삭제하고 객체 가져옴
 		
 		targetGroup.notificateExitClients(client);
+		
+		PrintWriter out = response.getWriter();
+		out.println("");
 	}
 
 }

@@ -3,7 +3,7 @@ package contents;
 import java.io.Serializable;
 
 import server_manager.LinKlipboard;
-import server_manager.Logger;
+import surpport.Logger;
 
 // Å×½ºÆ®
 public abstract class Contents implements Serializable{

@@ -14,7 +14,7 @@ import server_manager.ClientHandler;
 import server_manager.LinKlipboard;
 import server_manager.LinKlipboardGroup;
 import server_manager.LinKlipboardServer;
-import server_manager.Logger;
+import surpport.Logger;
 
 @WebServlet("/CreateGroup")
 public class RequestCreateGroup extends HttpServlet {

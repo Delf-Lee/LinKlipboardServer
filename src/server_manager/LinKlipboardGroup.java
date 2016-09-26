@@ -10,6 +10,7 @@ import Transferer.ContentsSender;
 import contents.Contents;
 import contents.StringContents;
 import datamanage.History;
+import surpport.Directory;
 
 public class LinKlipboardGroup {
 
@@ -217,6 +218,10 @@ public class LinKlipboardGroup {
 		}
 		return removed;
 	}
+	
+	public boolean isChief(ClientHandler client) {
+		return chief.equals(client);
+	}
 
 	/** 송신자를 제외한 그룹 내의 모든 클라이언트에게 그룹의 최신 Contents 객체를 전송
 	 * @param sender 서버에 데이터를 전송한 클라이언트 */
@@ -265,8 +270,8 @@ public class LinKlipboardGroup {
 			addressee.remove(sender.getRemoteAddr()); // 송신인은 제외대상
 
 			Set<String> ipAddrs;
-			synchronized (clients) {
-				ipAddrs = clients.keySet(); // key(ip주소)만 추출
+			synchronized (addressee) {
+				ipAddrs = addressee.keySet(); // key(ip주소)만 추출
 			}
 			Iterator<String> it = ipAddrs.iterator();
 			while (it.hasNext()) { // 송신 스레드 생성

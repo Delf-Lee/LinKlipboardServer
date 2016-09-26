@@ -23,8 +23,8 @@ public class ContentsSender extends Transfer {
 	public void setConnection() {
 		try {
 			// 소켓 접속 설정
-			//System.out.println(/*client.getNickname() + */"의 소켓 연결 설정(" + client.getLocalPort() + "/" + client.getRemotePort() + ")");
 			socket = new Socket(ipAddr, client.getRemotePort());
+			// TODO: timeout
 			// 스트림 설정
 			out = new ObjectOutputStream(socket.getOutputStream());
 

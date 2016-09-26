@@ -4,9 +4,13 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
+import surpport.Directory;
+import surpport.Logger;
+
 public class LinKlipboardServer {
 
 	private static Hashtable<String, LinKlipboardGroup> groups = new Hashtable<String, LinKlipboardGroup>(); // 임시 그룹 모임 1
+	private static Hashtable<String, ClientHandler> watingClients = new Hashtable<String, ClientHandler>();
 	public static Logger logger = new Logger();
 
 	public LinKlipboardServer() {
@@ -82,4 +86,13 @@ public class LinKlipboardServer {
 		}
 		return null;
 	}
+	
+	public static void waitClient(ClientHandler client) {
+		watingClients.put(client.getRemoteAddr(), client);
+	}
+	
+	public static ClientHandler enterClient(String ip) {
+		return watingClients.remove(ip);
+	}
+	
 }

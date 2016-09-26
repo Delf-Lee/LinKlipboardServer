@@ -1,35 +1,54 @@
+import java.util.Vector;
+
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+
+import Transferer.Transfer;
 
 public class TestClass2 extends JFrame {
-	public TestClass2() {
-		setSize(100, 100);
-		
-		setVisible(true);
+	private ThreadQueue m = new ThreadQueue();
+
+	public void run() {
+		m.start();
+		try {
+			Thread.sleep(300);
+		} catch (InterruptedException e) {
+		}
+
 	}
 
 	public static void main(String[] args) {
-		TestClass2 a = new TestClass2();
-		MsgWinow.confirm(a, "gg");
+		new TestClass2().run();
 	}
 }
 
-class MsgWinow extends JOptionPane {
+class ThreadQueue extends Thread {
+	private Vector<Transfer> queue = new Vector<Transfer>();
+	private boolean run = false;
+	private final static int FIRST_THREAD = 0;
 
-	public static void error(JFrame screen, String text) {
-		showMessageDialog(screen, text, "오류", ERROR_MESSAGE);
+	public ThreadQueue() {
+
+		try {
+			this.wait();
+			this.start();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
-	public static boolean confirm(JFrame screen, String text) {
-		int result = showConfirmDialog(screen, text, "확인", YES_NO_OPTION);
-		if (result == CLOSED_OPTION) {
-			return false;
-		}
-		else if (result == YES_OPTION) {
-			return true;
-		}
-		else {
-			return false;
+	public void add(Transfer th) {
+		queue.add(th);
+		notify();
+	}
+
+	@Override
+	public void run() {
+		while (true) {
+			try {
+				wait();
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 }

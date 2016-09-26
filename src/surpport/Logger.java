@@ -1,10 +1,13 @@
-package server_manager;
+package surpport;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Vector;
 
 import contents.Contents;
+import server_manager.ClientHandler;
+import server_manager.LinKlipboard;
+import server_manager.LinKlipboardServer;
 
 public class Logger {
 
