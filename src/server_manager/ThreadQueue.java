@@ -9,28 +9,42 @@ public class ThreadQueue extends Thread {
 	private boolean run = false;
 	private final static int FIRST_THREAD = 0;
 
-	public ThreadQueue() throws InterruptedException {
-		this.wait();
+	public ThreadQueue(){
+		// this.wait();
+		
 		this.start();
 	}
 
 	public void add(Transfer th) {
 		queue.add(th);
-		notify();
+		//	notify();
 	}
 
+	//	@Override
+	//	public void run() {
+	//		while (true) {
+	//			try {
+	//				wait();
+	//				if (run == false && !queue.isEmpty()) {
+	//					Transfer now = queue.remove(FIRST_THREAD);
+	//					now.start();
+	//					now.join();
+	//				}
+	//			} catch (InterruptedException e1) {
+	//				e1.printStackTrace();
+	//			}
+	//		}
+	//	}
 	@Override
 	public void run() {
 		while (true) {
-			try {
-				wait();
-				if (run == false && !queue.isEmpty()) {
-					Transfer now = queue.remove(FIRST_THREAD);
-					now.start();
-					now.join();
+			if (run == false && !queue.isEmpty()) {
+				Transfer now = queue.remove(FIRST_THREAD);
+				now.start();
+				run = true;
+				while (now.isAlive()) {
 				}
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
+				run = false;
 			}
 		}
 	}

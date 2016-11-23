@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 
-import com.sun.nio.sctp.Notification;
-
 import contents.Contents;
 import contents.ImageContents;
 import contents.StringContents;
@@ -19,6 +17,7 @@ public class ContentsReceiver extends Transfer {
 
 	public ContentsReceiver(LinKlipboardGroup group, ClientHandler client) {
 		super(group, client);
+		//client.addThread(this);
 		this.start();
 	}
 
@@ -26,7 +25,8 @@ public class ContentsReceiver extends Transfer {
 	public void setConnection() {
 		try {
 			// 소켓 접속 설정
-			listener = new ServerSocket(client.getRemotePort());
+			System.out.println(client.getRemotePort());
+			listener = new ServerSocket(client.getRemotePort() + 2);
 			ready = true;
 			System.out.println("응답 보냄 / 접속 대기");
 			socket = listener.accept();
@@ -63,7 +63,7 @@ public class ContentsReceiver extends Transfer {
 		contents.setSharer(client.getNickname());
 		group.setLastContents(contents); // 해당 그룹에 데이터 저장
 		group.notificateUpdate(client); // 그룹원들 모두에게 알림 송신
-		
+
 		closeSocket(); // 소켓 닫기
 	}
 
@@ -72,6 +72,9 @@ public class ContentsReceiver extends Transfer {
 		Contents contents = null;
 		try {
 			contents = (Contents) in.readObject();
+			if (contents == null) {
+				System.out.println("받은 데이터는 널");
+			}
 			System.out.println("받은 데이터의 타입은: " + contents.getType());
 			int type = contents.getType();
 			switch (type) {

@@ -23,6 +23,7 @@ public class History {
 		if (list2.put(serialNo, contents) != null) {
 			list2.replace(serialNo, contents); // 이게 문제구만;
 		}
+		contents.setSerialNo(serialNo);
 		return serialNo++;
 	}
 

@@ -29,14 +29,8 @@ public class RequestClipboardData extends HttpServlet {
 	// private static final long serialVersionUID = 1L;
 
 	public RequestClipboardData() {
-		super();
 	}
-
-	@Override
-	public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
-		response.setContentType("text/plain;charset=UTF-8");
-	}
-
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// 데이터 수신
 		String groupName = request.getParameter("groupName"); // 클라이언트가 속한 그룹
@@ -46,6 +40,7 @@ public class RequestClipboardData extends HttpServlet {
 		LinKlipboardGroup targetGroup = LinKlipboardServer.getGroup(groupName); // 그룹 객체 가져옴
 		ClientHandler client = targetGroup.searchClient(ipAddr); // 그룹에서 클라이언트 특정
 
+		System.out.println(client.getNickname() + "이 serialNo " + serialNo + "요청");
 		Transfer sender = null; // 송신 스레드
 		Contents contents = targetGroup.getLastContents(); // 전송할 객체
 		String fileName = "";
@@ -84,7 +79,7 @@ public class RequestClipboardData extends HttpServlet {
 	public void sendRespond(Transfer receiver, PrintWriter out, String fileName) {
 		while (!receiver.isReady()) {
 		}
+		System.out.println("응답:" + LinKlipboard.READY_TO_TRANSFER + LinKlipboard.SEPARATOR + fileName);
 		out.println(LinKlipboard.READY_TO_TRANSFER + LinKlipboard.SEPARATOR + fileName); // 데이터 전송 준비
 	}
-
 }

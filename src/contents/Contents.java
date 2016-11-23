@@ -11,9 +11,14 @@ public abstract class Contents implements Serializable{
 	protected String date = "null";
 	protected String sharer = "null";
 	protected int type = LinKlipboard.NULL;
+	protected int serialNo;
 
 	public Contents() {
 		setDate();
+	}
+	
+	public void setSerialNo(int serialNo) {
+		this.serialNo = serialNo;
 	}
 	
 	public Contents(String sharer) {
@@ -43,5 +48,9 @@ public abstract class Contents implements Serializable{
 
 	public int getType() {
 		return type;
+	}
+	
+	public void setType(int type) {
+		this.type = type;
 	}
 }

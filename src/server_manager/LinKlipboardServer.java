@@ -4,6 +4,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import surpport.Directory;
 import surpport.Logger;
 
@@ -17,6 +19,13 @@ public class LinKlipboardServer {
 		System.out.println(" - Boot Server");
 		Directory.createEmptyDirectory(LinKlipboard.FILE_DIR);
 		System.out.println(" - Create directory to store files ");
+		// debug();
+	}
+	
+	private void debug() {
+		HttpServletRequest a = null;
+		LinKlipboardGroup p = new LinKlipboardGroup("e", "1", new ClientHandler(a, "d"));
+		createGroup(p);
 	}
 
 	/** 货肺款 弊缝阑 积己 
@@ -93,6 +102,10 @@ public class LinKlipboardServer {
 	
 	public static ClientHandler enterClient(String ip) {
 		return watingClients.remove(ip);
+	}
+	
+	public static int watingSize() {
+		return watingClients.size();
 	}
 	
 }

@@ -28,6 +28,7 @@ public class FileReceiver extends Transfer {
 	public FileReceiver(LinKlipboardGroup group, ClientHandler client, String fileName) {
 		super(group, client);
 		this.fileName = fileName;
+		//client.addThread(this);
 		this.start();
 	}
 
@@ -37,7 +38,9 @@ public class FileReceiver extends Transfer {
 		try {
 			// 소켓 접속 설정
 			System.out.println(" - 소켓 생성 중");
-			listener = new ServerSocket(client.getRemotePort());
+			System.out.println(client.getRemotePort());
+			System.out.println(client.getRemotePort());
+			listener = new ServerSocket(client.getRemotePort() + 3);
 			System.out.println(" - 연결 준비 완료 / 접속 대기 중");
 			ready = true;
 			socket = listener.accept();

@@ -4,6 +4,8 @@ import java.net.Socket;
 
 import javax.servlet.http.HttpServletRequest;
 
+import Transferer.Transfer;
+
 public class ClientHandler {
 
 	private String nickName;
@@ -12,10 +14,9 @@ public class ClientHandler {
 	protected int remoteProt; // 클라이언트의 포트번호
 	protected int localPort; // 서버의 포트 번호
 	protected Socket socket; // 클라이언트와의 소켓
-	
+	private ThreadQueue queue = new ThreadQueue();
 
 	private int order;
-	//	protected LinKlipboardGroup myGroup;
 
 	public ClientHandler(HttpServletRequest client, String groupName) {
 		//this.client = client;
@@ -24,6 +25,12 @@ public class ClientHandler {
 			this.remoteProt = client.getRemotePort();
 			this.localPort = client.getLocalPort();
 			this.groupName = groupName;
+		} 
+		else {
+			this.remoteAddr = "localhost";
+			this.remoteProt = 77777;
+			//this.localPort = client.getLocalPort();
+			this.groupName = groupName;
 		}
 	}
 
@@ -31,7 +38,6 @@ public class ClientHandler {
 	public void setNickname(String nickname) {
 		this.nickName = nickname;
 	}
-	
 
 	/** @return 클라이언트가 속한 그룹 이름*/
 	public String getGroupName() {
@@ -65,9 +71,12 @@ public class ClientHandler {
 	public int getOrder() {
 		return order;
 	}
-	
+
 	public boolean equals(ClientHandler client) {
 		return remoteAddr.equals(client.remoteAddr);
 	}
-
+	
+	public void addThread(Transfer th) {
+		queue.add(th);
+	}
 }

@@ -6,7 +6,10 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
 
+import com.sun.security.ntlm.Client;
+
 import Transferer.ContentsSender;
+import Transferer.NotificationSender;
 import contents.Contents;
 import contents.StringContents;
 import datamanage.History;
@@ -169,18 +172,18 @@ public class LinKlipboardGroup {
 	public synchronized void notificateExitClients(ClientHandler sender) {
 		String exitClient = sender.getNickname();
 		Contents tmp = new StringContents("exit:" + exitClient, LinKlipboard.NULL);
-		new Notification(this, sender);
+		new Notification(this, sender, LinKlipboard.EXIT_CLITNT);
 	}
 
 	public synchronized void notificateJoinClient(ClientHandler sender) {
 		System.out.println("접속 알림 준비");
 		String joinClient = sender.getNickname();
 		Contents tmp = new StringContents("join:" + joinClient, LinKlipboard.NULL);
-		new Notification(this, sender);
+		new Notification(this, sender, LinKlipboard.JOIN_CLITNT);
 	}
-	
+
 	public synchronized void notificateUpdate(ClientHandler sender) {
-		new Notification(this, sender);
+		new Notification(this, sender, LinKlipboard.UPDATE_DATA);
 	}
 
 	public int getNextSerialNo() {
@@ -218,9 +221,22 @@ public class LinKlipboardGroup {
 		}
 		return removed;
 	}
-	
+
 	public boolean isChief(ClientHandler client) {
 		return chief.equals(client);
+	}
+
+	public int getCnt() {
+		return clients.size();
+	}
+
+	public int size() {
+		return clients.size();
+	}
+
+	@Override
+	public String toString() {
+		return "[" + groupName + "//" + chief.remoteAddr + "//" + chief.getNickname() + "]";
 	}
 
 	/** 송신자를 제외한 그룹 내의 모든 클라이언트에게 그룹의 최신 Contents 객체를 전송
@@ -231,9 +247,12 @@ public class LinKlipboardGroup {
 		private ClientHandler sender;
 		private int type;
 
-		public Notification(LinKlipboardGroup group, ClientHandler sender) {
+		public Notification(LinKlipboardGroup group, ClientHandler sender, int type) {
 			this.group = group;
 			this.sender = sender;
+			this.type = type;
+			System.out.println(sender.remoteAddr + " " + group.getCnt() + "명");
+			System.out.println("접속 알림 뿌림");
 			start();
 		}
 
@@ -245,13 +264,13 @@ public class LinKlipboardGroup {
 			case LinKlipboard.UPDATE_DATA:
 				sendUpdateData();
 				break;
-//			case LinKlipboard.EXIT_CLITNT:
-//				notificateExitClient();
-//				break;
-//
-//			case LinKlipboard.JOIN_CLITNT:
-//				notificateJoinClient();
-//				break;
+			case LinKlipboard.EXIT_CLITNT:
+				// notificateExitClient();
+				break;
+
+			case LinKlipboard.JOIN_CLITNT:
+				notificateJoinClient();
+				break;
 
 			default:
 				break;
@@ -275,30 +294,39 @@ public class LinKlipboardGroup {
 			}
 			Iterator<String> it = ipAddrs.iterator();
 			while (it.hasNext()) { // 송신 스레드 생성
-				new ContentsSender(group, clients.get(it.next()));
+				String ip = it.next();
+				System.out.println("뿌리는 아이피: " + ip);
+				new ContentsSender(group, clients.get(ip));
 			}
 		}
 
-//		private void notificateExitClient() {
-//			Set<String> ipAddrs;
-//			synchronized (clients) {
-//				ipAddrs = clients.keySet(); // key(ip주소)만 추출
-//			}
-//			Iterator<String> it = ipAddrs.iterator();
-//			while (it.hasNext()) { // 송신 스레드 생성
-//				new NotificationSender(it.next(), sender.getNickname(), NotificationSender.EXIT);
-//			}
-//		}
-//
-//		private void notificateJoinClient() {
-//			Set<String> ipAddrs;
-//			synchronized (clients) {
-//				ipAddrs = clients.keySet(); // key(ip주소)만 추출
-//			}
-//			Iterator<String> it = ipAddrs.iterator();
-//			while (it.hasNext()) { // 송신 스레드 생성
-//				new NotificationSender(it.next(), sender.getNickname(), NotificationSender.JOIN);
-//			}
-//		}
+		//		private void notificateExitClient() {
+		//			Set<String> ipAddrs;
+		//			synchronized (clients) {
+		//				ipAddrs = clients.keySet(); // key(ip주소)만 추출
+		//			}
+		//			Iterator<String> it = ipAddrs.iterator();
+		//			while (it.hasNext()) { // 송신 스레드 생성
+		//				new NotificationSender(it.next(), sender.getNickname(), NotificationSender.EXIT);
+		//			}
+		//		}
+		//
+		private void notificateJoinClient() {
+			Hashtable<String, ClientHandler> addressee = null;
+
+			synchronized (clients) {
+				addressee = new Hashtable<String, ClientHandler>(clients); // 현재 그룹원 정보 복사
+			}
+			String nickname = addressee.remove(sender.getRemoteAddr()).getNickname(); // 송신인은 제외대상
+
+			Set<String> ipAddrs;
+			synchronized (clients) {
+				ipAddrs = clients.keySet(); // key(ip주소)만 추출
+			}
+			Iterator<String> it = ipAddrs.iterator();
+			while (it.hasNext()) { // 송신 스레드 생성
+				new NotificationSender(group, clients.get(it.next()), LinKlipboard.JOIN_CLITNT, nickname);
+			}
+		}
 	}
 }

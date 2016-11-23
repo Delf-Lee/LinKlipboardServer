@@ -74,5 +74,6 @@ public class RequestCreateGroup extends HttpServlet {
 		}
 		// Àü¼Û
 		out.println(respondMsg);
+		out.close();
 	}
 }

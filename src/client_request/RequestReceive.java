@@ -27,8 +27,6 @@ public class RequestReceive extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	public RequestReceive() {
-		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -41,8 +39,10 @@ public class RequestReceive extends HttpServlet {
 		String fileName = request.getParameter("fileName"); // 클라이언트가 보낼 파일명
 		String ipAddr = request.getRemoteAddr();
 		
+		
 		LinKlipboardGroup targetGroup = LinKlipboardServer.getGroup(groupName); // 그룹 객체 가져옴
 		ClientHandler client = targetGroup.searchClient(ipAddr); // 그룹에서 클라이언트 특정
+		System.out.println(client.getNickname() + "이 fileName " + fileName + "를 서버에게 송신 시도");
 		
 		PrintWriter out = response.getWriter(); // 스트림 가져옴
 
@@ -57,8 +57,9 @@ public class RequestReceive extends HttpServlet {
 			receiver = new FileReceiver(targetGroup, client, fileName); // 파일 수신 스레드 생성
 			sendRespond(receiver, out, sirialNo);
 		}
-		// 2. 문자열 or 이미지 요청
+		// 2. 문자열 or 이미지
 		else {
+			System.out.println("#########################################################");
 			receiver = new ContentsReceiver(targetGroup, client); // 객체 수신 스레드 생성
 			sendRespond(receiver, out, sirialNo); // 응답 대기
 		}
@@ -68,6 +69,7 @@ public class RequestReceive extends HttpServlet {
 	private void sendRespond(Transfer receiver, PrintWriter out, int serialNo) {
 		String sendMsg = null;
 		while (!receiver.isReady()) {
+			System.out.println("준비 안됨");
 		}
 		sendMsg = LinKlipboard.READY_TO_TRANSFER + LinKlipboard.SEPARATOR;
 		sendMsg += "serialNo" + LinKlipboard.SEPARATOR + serialNo;

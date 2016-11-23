@@ -37,11 +37,20 @@ public class Logger {
 		case LinKlipboard.ACCESS_PERMIT:
 			prtMsg += " access success.";
 			break;
+		case LinKlipboard.COMPLETE_APPLY:
+			prtMsg += " change nickname successful.";
+		case LinKlipboard.READY_TO_TRANSFER:
+			prtMsg += " was notified to complete ready to send data at server.";
+			break;
 		default:
 			break;
 		}
 	}
 	
+	// public static void re
+	public static void setConnection(ClientHandler client, String serialNo) {
+		
+	}
 
 	public static void logCreateGroup(ClientHandler client) {
 		String ipAddr = client.getRemoteAddr();
